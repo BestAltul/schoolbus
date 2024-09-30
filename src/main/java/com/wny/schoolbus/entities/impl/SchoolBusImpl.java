@@ -25,6 +25,10 @@ public class SchoolBusImpl implements Vehicle {
     @NonNull
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="terminal_id",referencedColumnName = "id")
+    private TerminalImpl terminal;
+
 
 
 }

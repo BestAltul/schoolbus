@@ -39,7 +39,7 @@ public class BusListView extends VerticalLayout {
         dataProvider = new ListDataProvider<>(buses);
         grid.setDataProvider(dataProvider);
 
-        grid.addColumn(SchoolBusImpl::getId).setHeader("ID");
+        //grid.addColumn(SchoolBusImpl::getId).setHeader("ID");
         grid.addColumn(SchoolBusImpl::getName).setHeader("Name");
         grid.addColumn(SchoolBusImpl::getBusType).setHeader("Type");
 
