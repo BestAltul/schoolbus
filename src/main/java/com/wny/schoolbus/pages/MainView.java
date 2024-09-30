@@ -3,44 +3,65 @@ package com.wny.schoolbus.pages;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.router.RouterLink;
 
 @Route("")
 public class MainView extends AppLayout {
 
+    private boolean isDrawerOpened = true; // Текущее состояние панели
+
     public MainView() {
-        // Добавляем верхний логотип
+        // Логотип в верхней панели
         Image logo = new Image("https://example.com/logo.png", "Logo");
-        logo.setWidth("150px");  // Задаем размер картинки
+        logo.setWidth("150px");
 
-        HorizontalLayout header = new HorizontalLayout();
-        header.setWidthFull();  // Занимаем всю ширину
-        header.add(logo);  // Добавляем логотип в верхнюю панель
+        // Кнопка для управления боковой панелью
+        Icon menuIcon = new Icon(VaadinIcon.MENU);
+        Button toggleDrawerButton = new Button(menuIcon, event -> toggleDrawerState());
 
-        // Меню в левой боковой панели
+        // Настраиваем размер кнопки
+        toggleDrawerButton.setWidth("50px");
+        toggleDrawerButton.setHeight("50px");
+
+        // Горизонтальный макет для кнопки и логотипа
+        HorizontalLayout header = new HorizontalLayout(toggleDrawerButton, logo);
+        header.setWidthFull();  // Занимаем всю ширину панели
+        header.setAlignItems(Alignment.CENTER);
+
+        // Добавляем логотип и кнопку в верхнюю панель
+        addToNavbar(header);
+
+        RouterLink busesLink = new RouterLink("Buses", BusListView.class);
+        //RouterLink terminalsLink = new RouterLink("Terminals",Terminals)
+
         VerticalLayout menuLayout = new VerticalLayout();
-        menuLayout.add(new Button("Buses", event -> setContent(createContent("Information about buses"))));
-        menuLayout.add(new Button("Terminals", event -> setContent(createContent("Information about terminals"))));
+        menuLayout.add(busesLink);
+ //       menuLayout.add(new Button("Buses", event -> setContent(createContent("Information about buses"))));
+ //       menuLayout.add(new Button("Terminals", event -> setContent(createContent("Information about terminals"))));
 
         // Добавляем меню в боковую панель
         addToDrawer(menuLayout);
 
-        // Добавляем логотип в верхнюю панель
-        addToNavbar(header);
-
-        // Стандартное приветствие по умолчанию
+        // Добавляем контент по умолчанию
         setContent(createContent("Select an option from the menu to see details."));
+    }
+
+    // Метод для переключения состояния панели
+    private void toggleDrawerState() {
+        isDrawerOpened = !isDrawerOpened;
+        setDrawerOpened(isDrawerOpened);  // Открыть/закрыть боковую панель
     }
 
     // Метод для создания контента в правой части
     private VerticalLayout createContent(String text) {
         VerticalLayout contentLayout = new VerticalLayout();
-        Span description = new Span(text);  // Используем Span вместо Label
-        contentLayout.add(description);
+        contentLayout.add(text);
         return contentLayout;
     }
 }
-

@@ -1,5 +1,6 @@
 package com.wny.schoolbus.pages;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -23,18 +24,18 @@ import java.util.List;
 
 public class BusListView extends VerticalLayout {
 
-    private final Grid<SchoolBusImpl> grid = new Grid<>(SchoolBusImpl.class);
-    private final TextField filterText = new TextField();
-    private ListDataProvider<SchoolBusImpl> dataProvider;
-
     private final BusServiceImpl busService;
-
+    private final Grid<SchoolBusImpl> grid = new Grid<>(SchoolBusImpl.class);
+    private ListDataProvider<SchoolBusImpl> dataProvider;
+    private final Button addBusButton = new Button("Add a new bus");
+    private final Button backButton = new Button("Back");
+    private final TextField filterText = new TextField();
 
     public BusListView(BusServiceImpl busService) {
         this.busService = busService;
 
+        // Настройка таблицы с данными
         List<SchoolBusImpl> buses = busService.getAllBuses();
-
         dataProvider = new ListDataProvider<>(buses);
         grid.setDataProvider(dataProvider);
 
@@ -42,14 +43,24 @@ public class BusListView extends VerticalLayout {
         grid.addColumn(SchoolBusImpl::getName).setHeader("Name");
         grid.addColumn(SchoolBusImpl::getBusType).setHeader("Type");
 
+        // Кнопка для возврата назад
+        backButton.addClickListener(event -> UI.getCurrent().getPage().getHistory().back());
+
+        // Кнопка для добавления нового автобуса
+        addBusButton.addClickListener(event -> openAddBusDialog());
+
+        // Настройка фильтра
         filterText.setPlaceholder("Filter by name...");
-        filterText.addValidationStatusChangeListener(event->applyFilter());
+        filterText.addValueChangeListener(event -> applyFilter());
 
-        Button addBusButton = new Button("Add a new bus",event->openAddBusDialog());
+        // Горизонтальный макет для фильтра и кнопки добавления автобуса
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addBusButton);
+        toolbar.setWidthFull();  // Занять всю ширину
+        toolbar.setSpacing(true);  // Добавить отступы между элементами
 
-        add(new HorizontalLayout(filterText,addBusButton));
+        // Добавляем компоненты на страницу
+        add(backButton, toolbar, grid);
 
-        add(new HorizontalLayout(filterText),grid);
     }
 
     public void openAddBusDialog(){
