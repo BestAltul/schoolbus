@@ -2,6 +2,7 @@ package com.wny.schoolbus.entities.impl;
 
 import com.wny.schoolbus.entities.Vehicle;
 import com.wny.schoolbus.enums.BusType;
+import com.wny.schoolbus.enums.Terminal;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,10 +26,7 @@ public class SchoolBusImpl implements Vehicle {
     @NonNull
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="terminal_id",referencedColumnName = "id")
-    private TerminalImpl terminal;
-
-
-
+    @Enumerated(EnumType.STRING)
+    @NonNull
+    private Terminal terminal;
 }
