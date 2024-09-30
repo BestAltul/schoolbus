@@ -3,23 +3,27 @@ package com.wny.schoolbus.entities.impl;
 import com.wny.schoolbus.entities.Vehicle;
 import com.wny.schoolbus.enums.BusType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Entity
-@Table(name="school_bus")
+
 @Getter
 @Setter
-@AllArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
+@Entity
+@Table(name="school_bus")
 public class SchoolBusImpl implements Vehicle {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Enumerated(EnumType.STRING)
+    @NonNull
     private BusType busType;
+
+    @NonNull
+    private String name;
 
 
 

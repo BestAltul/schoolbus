@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum BusType {
 
-    BigBus ("Big buses"),
-    SmallBus("Small buses"),
-    Van("Van"),
-    MiniVan("Others");
+    BIGBUS ("Big buses"),
+    SMALLBUS("Small buses"),
+    VAN("Van"),
+    MINIVAN("Others");
 
     private final String description;
 

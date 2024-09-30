@@ -6,17 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Table(name="terminal")
 @Getter
 @Setter
 @AllArgsConstructor
+@Entity
+@Table(name="terminal")
 public class TerminalImpl implements Terminal {
 
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Column(name="name")
     private String name;
