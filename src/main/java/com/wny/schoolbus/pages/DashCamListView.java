@@ -16,20 +16,25 @@ import com.vaadin.flow.router.Route;
 import com.wny.schoolbus.entities.impl.DashCamImpl;
 import com.wny.schoolbus.entities.impl.SimCardImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
+import com.wny.schoolbus.services.impl.SimCardServiceImpl;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-@Route("dascam-list")
+@Route("dashcam-list")
 public class DashCamListView extends VerticalLayout {
     private final DashCamServiceImpl dashCamService;
+    private final SimCardServiceImpl simCardService;
     private final Grid<DashCamImpl> grid = new Grid<>(DashCamImpl.class);
     private ListDataProvider<DashCamImpl> dataProvider;
     private final Button addDashCamButton = new Button("Add a new dashcam");
     private final Button backButton = new Button("Back");
     private final TextField filterText = new TextField();
 
-    public DashCamListView(DashCamServiceImpl dashCamService) {
+    public DashCamListView(DashCamServiceImpl dashCamService, SimCardServiceImpl simCardService) {
         this.dashCamService = dashCamService;
+        this.simCardService = simCardService;
 
         // Настройка таблицы с данными
         List<DashCamImpl> dashCams = dashCamService.getAllDashCameras();
@@ -38,32 +43,24 @@ public class DashCamListView extends VerticalLayout {
 
         grid.removeAllColumns();
 
-        // Добавление колонок
-        grid.addColumn(DashCamImpl::getId).setHeader("ID");
         grid.addColumn(DashCamImpl::getName).setHeader("Name");
         grid.addColumn(DashCamImpl::getDRID).setHeader("DRID");
         grid.addColumn(dashCam -> dashCam.getSimCard().getSimCardNumber()).setHeader("SIM Card Number");
         grid.addColumn(dashCam -> dashCam.getSchoolBus() != null ? dashCam.getSchoolBus().getName() : "N/A").setHeader("School Bus");
 
-        // Кнопка для возврата назад
         backButton.addClickListener(event -> UI.getCurrent().getPage().getHistory().back());
 
-        // Кнопка для добавления новой камеры
         addDashCamButton.addClickListener(event -> openAddDashCamDialog());
 
-        // Настройка фильтра
         filterText.setPlaceholder("Filter by name...");
         filterText.addValueChangeListener(event -> applyFilter());
 
-        // Горизонтальный макет для фильтра и кнопки добавления камеры
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addDashCamButton);
         toolbar.setWidthFull();  // Занять всю ширину
         toolbar.setSpacing(true);  // Добавить отступы между элементами
 
-        // Обработчик двойного клика для редактирования камеры
         grid.addItemDoubleClickListener(event -> openEditDialog(event.getItem()));
 
-        // Добавляем компоненты на страницу
         add(backButton, toolbar, grid);
     }
 
@@ -77,7 +74,7 @@ public class DashCamListView extends VerticalLayout {
 
         ComboBox<SimCardImpl> simCardComboBox = new ComboBox<>("SIM Card");
         // Получение списка SIM-карт для выбора
-        List<SimCardImpl> simCards = dashCamService.getAllSimCards(); // Предполагаем, что есть такой метод
+        List<SimCardImpl> simCards = simCardService.getAllSimCards(); // Предполагаем, что есть такой метод
         simCardComboBox.setItems(simCards);
         simCardComboBox.setItemLabelGenerator(SimCardImpl::getSimCardNumber);
         simCardComboBox.setPlaceholder("Select SIM card");
@@ -121,7 +118,7 @@ public class DashCamListView extends VerticalLayout {
         TextField imeiField = new TextField("IMEI", dashCam.getIMEI());
 
         ComboBox<SimCardImpl> simCardComboBox = new ComboBox<>("SIM Card");
-        List<SimCardImpl> simCards = dashCamService.getAllSimCards(); // Предполагаем, что есть такой метод
+        List<SimCardImpl> simCards = simCardService.getAllSimCards(); // Предполагаем, что есть такой метод
         simCardComboBox.setItems(simCards);
         simCardComboBox.setItemLabelGenerator(SimCardImpl::getSimCardNumber);
         simCardComboBox.setValue(dashCam.getSimCard());

@@ -38,10 +38,11 @@ public class MainView extends AppLayout {
         addToNavbar(header);
 
         RouterLink busesLink = new RouterLink("Buses", BusListView.class);
-        //RouterLink terminalsLink = new RouterLink("Terminals",Terminals)
+        RouterLink dashCamLink = new RouterLink("Dash cameras",DashCamListView.class);
 
         VerticalLayout menuLayout = new VerticalLayout();
         menuLayout.add(busesLink);
+        menuLayout.add(dashCamLink);
  //       menuLayout.add(new Button("Buses", event -> setContent(createContent("Information about buses"))));
  //       menuLayout.add(new Button("Terminals", event -> setContent(createContent("Information about terminals"))));
 

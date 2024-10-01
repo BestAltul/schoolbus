@@ -16,4 +16,8 @@ public class DashCamServiceImpl implements DashCamService {
     public List<DashCamImpl> getAllDashCameras(){
        return dashCamRepository.findAll();
     }
+
+    public void save(DashCamImpl dashCam){
+        dashCamRepository.save(dashCam);
+    }
 }
