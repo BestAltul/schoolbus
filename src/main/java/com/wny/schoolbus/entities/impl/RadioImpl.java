@@ -20,4 +20,7 @@ public class RadioImpl implements Radio {
     private final SimCardImpl simCard;
 
     private final String IMEI;
+
+    @OneToOne(mappedBy = "radio")
+    private SchoolBusImpl schoolBus;
 }

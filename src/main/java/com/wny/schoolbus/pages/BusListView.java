@@ -13,39 +13,49 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.Theme;
+import com.wny.schoolbus.annotations.DisplayName;
+import com.wny.schoolbus.entities.impl.DashCamImpl;
 import com.wny.schoolbus.enums.BusType;
 import com.wny.schoolbus.enums.Terminal;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vaadin.flow.data.binder.Binder;
+import java.lang.reflect.Field;
+
 
 import com.wny.schoolbus.entities.impl.SchoolBusImpl;
 import com.wny.schoolbus.services.impl.BusServiceImpl;
+import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 
 import java.util.List;
 
 @Route("bus-list")
-@CssImport("./styles/styles.css")
 public class BusListView extends VerticalLayout {
 
     private final BusServiceImpl busService;
+    private final DashCamServiceImpl dashCamService;
     private final Grid<SchoolBusImpl> grid = new Grid<>(SchoolBusImpl.class);
     private ListDataProvider<SchoolBusImpl> dataProvider;
     private final Button addBusButton = new Button("Add a new bus");
     private final Button backButton = new Button("Back");
     private final TextField filterText = new TextField();
 
-    public BusListView(BusServiceImpl busService) {
+    public BusListView(BusServiceImpl busService, DashCamServiceImpl dashCamService) {
         this.busService = busService;
+        this.dashCamService = dashCamService;
 
         // Настройка таблицы с данными
         List<SchoolBusImpl> buses = busService.getAllBuses();
         dataProvider = new ListDataProvider<>(buses);
         grid.setDataProvider(dataProvider);
+
         grid.removeAllColumns();
 
         //grid.addColumn(SchoolBusImpl::getId).setHeader("ID");
-        grid.addColumn(SchoolBusImpl::getName).setHeader("Name");
-        grid.addColumn(SchoolBusImpl::getBusType).setHeader("Type");
-        grid.addColumn(SchoolBusImpl::getTerminal).setHeader("Terminal");
+      //  grid.addColumn(SchoolBusImpl::getName).setHeader("Name");
+       // grid.addColumn(SchoolBusImpl::getBusType).setHeader("Type");
+       // grid.addColumn(SchoolBusImpl::getTerminal).setHeader("Terminal");
+
+        addColumnsDynamically();
 
         // Кнопка для возврата назад
         backButton.addClickListener(event -> UI.getCurrent().getPage().getHistory().back());
@@ -69,6 +79,31 @@ public class BusListView extends VerticalLayout {
 
     }
 
+    private void addColumnsDynamically() {
+        Field[] fields = SchoolBusImpl.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+
+            if("id".equals(field.getName())){
+                continue;
+            }
+            // Проверяем наличие аннотации DisplayName
+            DisplayName displayName = field.getAnnotation(DisplayName.class);
+            String header = displayName != null ? displayName.value() : field.getName(); // Используем имя аннотации, если оно есть
+
+            grid.addColumn(item -> {
+                try {
+                    return field.get(item);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    return "N/A";
+                }
+            }).setHeader(header);  // Устанавливаем пользовательское название колонки
+        }
+    }
+
+
     public void openAddBusDialog(){
         Dialog dialog = new Dialog();
 
@@ -85,13 +120,24 @@ public class BusListView extends VerticalLayout {
         terminalField.setItemLabelGenerator(Terminal::getDescription);
         terminalField.setPlaceholder("Select terminal");
 
+        ComboBox<DashCamImpl> dashCamComboBox = new ComboBox<>("Dash camera");
+
+        List<DashCamImpl> dashCamList = dashCamService.getAllDashCameras();
+        dashCamComboBox.setItems(dashCamList);
+        dashCamComboBox.setItemLabelGenerator(DashCamImpl::getDescription);
+        dashCamComboBox.setPlaceholder("Select dash camera");
+
+        terminalField.setItems();
+        terminalField.setItemLabelGenerator(Terminal::getDescription);
+        terminalField.setPlaceholder("Select terminal");
+
         Button saveButton = new Button("Save", event->{
             String name = nameField.getValue();
             BusType type = typeField.getValue();
             Terminal terminal = terminalField.getValue();
 
                 if (!name.isEmpty()) {
-                    SchoolBusImpl newBus = new SchoolBusImpl(type, name,terminal);
+                    SchoolBusImpl newBus = new SchoolBusImpl(name,type,terminal);
                     busService.save(newBus);
 
                     dataProvider.getItems().add(newBus);
@@ -105,7 +151,7 @@ public class BusListView extends VerticalLayout {
         });
         Button cancelButton = new Button("Cancel",event->dialog.close());
 
-        formLayout.add(nameField,typeField,terminalField);
+        formLayout.add(nameField,typeField,dashCamComboBox,terminalField);
         dialog.add(formLayout,new HorizontalLayout(saveButton,cancelButton));
 
         dialog.open();
@@ -114,8 +160,10 @@ public class BusListView extends VerticalLayout {
     private void openEditDialog(SchoolBusImpl bus) {
 
         FormLayout formLayout = new FormLayout();
-
         Dialog dialog = new Dialog();
+
+        Binder<SchoolBusImpl> binder = new Binder<>(SchoolBusImpl.class);
+
         TextField nameField = new TextField("Name", bus.getName());
 
         ComboBox<BusType> typeField = new ComboBox<>("Type");
@@ -126,15 +174,29 @@ public class BusListView extends VerticalLayout {
         terminalField.setItems(Terminal.values());
         terminalField.setValue(bus.getTerminal());
 
-        Button saveButton = new Button("Save", event -> {
-            bus.setName(nameField.getValue());
-            bus.setBusType(typeField.getValue());
-            bus.setTerminal(terminalField.getValue());
+        binder.forField(nameField)
+                .asRequired("Name is required")
+                .bind(SchoolBusImpl::getName,SchoolBusImpl::setName);
+        binder.forField(typeField)
+                .asRequired("Type is required")
+                .bind(SchoolBusImpl::getBusType,SchoolBusImpl::setBusType);
+        binder.forField(terminalField)
+                .asRequired("Terminal is required")
+                .bind(SchoolBusImpl::getTerminal,SchoolBusImpl::setTerminal);
 
-            busService.save(bus);  // Сохраняем изменения
-            dataProvider.refreshAll();  // Обновляем данные в Grid
-            Notification.show("Bus updated!");
-            dialog.close();
+        binder.setBean(bus);
+
+        Button saveButton = new Button("Save", event -> {
+
+            if(binder.validate().isOk()){
+                busService.save(bus);
+                dataProvider.refreshAll();
+                Notification.show("Bus updated");
+                dialog.close();
+            }else{
+                Notification.show("Please fill all required fields!");
+            }
+
         });
 
         Button cancelButton = new Button("Cancel",event->dialog.close());

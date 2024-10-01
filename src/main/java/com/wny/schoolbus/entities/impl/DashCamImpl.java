@@ -20,4 +20,11 @@ public class DashCamImpl implements com.wny.schoolbus.entities.DashCam {
     @ManyToOne
     @JoinColumn(name = "sim_card_id")
     private SimCardImpl simCard;
+
+    @OneToOne(mappedBy = "dashCam")
+    private SchoolBusImpl schoolBus;
+
+    public String getDescription(){
+        return this.name+" "+DRID;
+    }
 }
