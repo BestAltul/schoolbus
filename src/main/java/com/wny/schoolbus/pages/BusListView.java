@@ -51,10 +51,10 @@ public class BusListView extends VerticalLayout {
         grid.removeAllColumns();
 
         //grid.addColumn(SchoolBusImpl::getId).setHeader("ID");
-      //  grid.addColumn(SchoolBusImpl::getName).setHeader("Name");
-       // grid.addColumn(SchoolBusImpl::getBusType).setHeader("Type");
-       // grid.addColumn(SchoolBusImpl::getTerminal).setHeader("Terminal");
-
+     /*   grid.addColumn(SchoolBusImpl::getName).setHeader("Name");
+        grid.addColumn(SchoolBusImpl::getBusType).setHeader("Type");
+        grid.addColumn(SchoolBusImpl::getTerminal).setHeader("Terminal");
+*/
         addColumnsDynamically();
 
         // Кнопка для возврата назад
@@ -126,10 +126,6 @@ public class BusListView extends VerticalLayout {
         dashCamComboBox.setItems(dashCamList);
         dashCamComboBox.setItemLabelGenerator(DashCamImpl::getDescription);
         dashCamComboBox.setPlaceholder("Select dash camera");
-
-        terminalField.setItems();
-        terminalField.setItemLabelGenerator(Terminal::getDescription);
-        terminalField.setPlaceholder("Select terminal");
 
         Button saveButton = new Button("Save", event->{
             String name = nameField.getValue();

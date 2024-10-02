@@ -17,4 +17,8 @@ public class SimCardServiceImpl implements SimCardService {
     public List<SimCardImpl> getAllSimCards() {
         return simCardRepository.findAll();
     }
+
+    public void save(SimCardImpl simCard){
+        simCardRepository.save(simCard);
+    }
 }

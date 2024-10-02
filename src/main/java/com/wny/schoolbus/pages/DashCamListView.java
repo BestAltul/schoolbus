@@ -17,8 +17,6 @@ import com.wny.schoolbus.entities.impl.DashCamImpl;
 import com.wny.schoolbus.entities.impl.SimCardImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 import com.wny.schoolbus.services.impl.SimCardServiceImpl;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -36,7 +34,6 @@ public class DashCamListView extends VerticalLayout {
         this.dashCamService = dashCamService;
         this.simCardService = simCardService;
 
-        // Настройка таблицы с данными
         List<DashCamImpl> dashCams = dashCamService.getAllDashCameras();
         dataProvider = new ListDataProvider<>(dashCams);
         grid.setDataProvider(dataProvider);
@@ -56,8 +53,8 @@ public class DashCamListView extends VerticalLayout {
         filterText.addValueChangeListener(event -> applyFilter());
 
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addDashCamButton);
-        toolbar.setWidthFull();  // Занять всю ширину
-        toolbar.setSpacing(true);  // Добавить отступы между элементами
+        toolbar.setWidthFull();
+        toolbar.setSpacing(true);
 
         grid.addItemDoubleClickListener(event -> openEditDialog(event.getItem()));
 
@@ -73,8 +70,8 @@ public class DashCamListView extends VerticalLayout {
         TextField imeiField = new TextField("IMEI");
 
         ComboBox<SimCardImpl> simCardComboBox = new ComboBox<>("SIM Card");
-        // Получение списка SIM-карт для выбора
-        List<SimCardImpl> simCards = simCardService.getAllSimCards(); // Предполагаем, что есть такой метод
+
+        List<SimCardImpl> simCards = simCardService.getAllSimCards();
         simCardComboBox.setItems(simCards);
         simCardComboBox.setItemLabelGenerator(SimCardImpl::getSimCardNumber);
         simCardComboBox.setPlaceholder("Select SIM card");
@@ -85,7 +82,7 @@ public class DashCamListView extends VerticalLayout {
             String imei = imeiField.getValue();
             SimCardImpl simCard = simCardComboBox.getValue();
 
-            if (!name.isEmpty() && !drid.isEmpty() && simCard != null) {
+            if (!name.isEmpty() && !drid.isEmpty()) {
                 DashCamImpl newDashCam = new DashCamImpl(null, name, drid, imei, simCard, null);
                 dashCamService.save(newDashCam);
 
@@ -118,7 +115,7 @@ public class DashCamListView extends VerticalLayout {
         TextField imeiField = new TextField("IMEI", dashCam.getIMEI());
 
         ComboBox<SimCardImpl> simCardComboBox = new ComboBox<>("SIM Card");
-        List<SimCardImpl> simCards = simCardService.getAllSimCards(); // Предполагаем, что есть такой метод
+        List<SimCardImpl> simCards = simCardService.getAllSimCards();
         simCardComboBox.setItems(simCards);
         simCardComboBox.setItemLabelGenerator(SimCardImpl::getSimCardNumber);
         simCardComboBox.setValue(dashCam.getSimCard());

@@ -4,15 +4,15 @@ import com.wny.schoolbus.entities.SimCard;
 import com.wny.schoolbus.enums.SimCardCarrier;
 import com.wny.schoolbus.enums.SimCardType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
-@Data
+@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name="sim_card")
 public class SimCardImpl implements SimCard {
 
@@ -20,10 +20,15 @@ public class SimCardImpl implements SimCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NonNull
     @Enumerated(EnumType.STRING)
     private SimCardType simCardType;
+
+    @NonNull
     @Enumerated(EnumType.STRING)
     private SimCardCarrier simCardCarrier;
+
+    @NonNull
     private String simCardNumber;
 
     @OneToMany(mappedBy = "simCard")

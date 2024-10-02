@@ -4,9 +4,11 @@ import com.wny.schoolbus.entities.SimCard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="dash_cam")
 public class DashCamImpl implements com.wny.schoolbus.entities.DashCam {
