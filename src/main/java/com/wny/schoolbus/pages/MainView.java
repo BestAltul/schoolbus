@@ -14,27 +14,23 @@ import com.vaadin.flow.router.RouterLink;
 @Route("")
 public class MainView extends AppLayout {
 
-    private boolean isDrawerOpened = true; // Текущее состояние панели
+    private boolean isDrawerOpened = true;
 
     public MainView() {
-        // Логотип в верхней панели
-        Image logo = new Image("https://example.com/logo.png", "Logo");
+
+        Image logo = new Image("images/logo.png", "Logo");
         logo.setWidth("150px");
 
-        // Кнопка для управления боковой панелью
         Icon menuIcon = new Icon(VaadinIcon.MENU);
         Button toggleDrawerButton = new Button(menuIcon, event -> toggleDrawerState());
 
-        // Настраиваем размер кнопки
         toggleDrawerButton.setWidth("50px");
         toggleDrawerButton.setHeight("50px");
 
-        // Горизонтальный макет для кнопки и логотипа
         HorizontalLayout header = new HorizontalLayout(toggleDrawerButton, logo);
         header.setWidthFull();  // Занимаем всю ширину панели
         header.setAlignItems(Alignment.CENTER);
 
-        // Добавляем логотип и кнопку в верхнюю панель
         addToNavbar(header);
 
         RouterLink busesLink = new RouterLink("Buses", BusListView.class);
@@ -48,20 +44,16 @@ public class MainView extends AppLayout {
  //       menuLayout.add(new Button("Buses", event -> setContent(createContent("Information about buses"))));
  //       menuLayout.add(new Button("Terminals", event -> setContent(createContent("Information about terminals"))));
 
-        // Добавляем меню в боковую панель
         addToDrawer(menuLayout);
 
-        // Добавляем контент по умолчанию
         setContent(createContent("Select an option from the menu to see details."));
     }
 
-    // Метод для переключения состояния панели
     private void toggleDrawerState() {
         isDrawerOpened = !isDrawerOpened;
-        setDrawerOpened(isDrawerOpened);  // Открыть/закрыть боковую панель
+        setDrawerOpened(isDrawerOpened);
     }
 
-    // Метод для создания контента в правой части
     private VerticalLayout createContent(String text) {
         VerticalLayout contentLayout = new VerticalLayout();
         contentLayout.add(text);

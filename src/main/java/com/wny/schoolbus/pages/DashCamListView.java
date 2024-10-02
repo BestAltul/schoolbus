@@ -13,11 +13,14 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
+import com.wny.schoolbus.entities.SimCardHistory;
 import com.wny.schoolbus.entities.impl.DashCamImpl;
+import com.wny.schoolbus.entities.impl.SimCardHistoryImpl;
 import com.wny.schoolbus.entities.impl.SimCardImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 import com.wny.schoolbus.services.impl.SimCardServiceImpl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Route("dashcam-list")
@@ -43,6 +46,16 @@ public class DashCamListView extends VerticalLayout {
         grid.addColumn(DashCamImpl::getName).setHeader("Name");
         grid.addColumn(DashCamImpl::getDRID).setHeader("DRID");
         grid.addColumn(dashCam -> dashCam.getSimCard().getSimCardNumber()).setHeader("SIM Card Number");
+        grid.addColumn(dashCam -> {
+            SimCardHistoryImpl lastHistory = simCardService.getLastSimCardHistory(dashCam.getSimCard());
+            if (lastHistory != null) {
+                return "<a href='#' onclick='openSimCardHistory(" + dashCam.getSimCard().getId() + ")'>" + lastHistory.getStartDate() + "</a>";
+
+            } else {
+                return "N/A";
+            }
+        }).setHeader("Last SIM Change");
+
         grid.addColumn(dashCam -> dashCam.getSchoolBus() != null ? dashCam.getSchoolBus().getName() : "N/A").setHeader("School Bus");
 
         backButton.addClickListener(event -> UI.getCurrent().getPage().getHistory().back());
@@ -59,6 +72,23 @@ public class DashCamListView extends VerticalLayout {
         grid.addItemDoubleClickListener(event -> openEditDialog(event.getItem()));
 
         add(backButton, toolbar, grid);
+    }
+
+    public void openSimCardHistoryDialog(Integer simCardId) {
+        Dialog dialog = new Dialog();
+
+        List<SimCardHistoryImpl> simCardHistories = simCardService.getSimCardHistoryBySimCardId(simCardId);
+
+        Grid<SimCardHistoryImpl> historyGrid = new Grid<>(SimCardHistoryImpl.class);
+        historyGrid.setItems(simCardHistories);
+
+        historyGrid.addColumn(SimCardHistoryImpl::getStartDate).setHeader("Start Date");
+        historyGrid.addColumn(SimCardHistoryImpl::getEndDate).setHeader("End Date");
+        historyGrid.addColumn(history -> history.getDashCam().getName()).setHeader("DashCam");
+        historyGrid.addColumn(history -> history.getSimCard().getSimCardNumber()).setHeader("SIM Card Number");
+
+        dialog.add(historyGrid);
+        dialog.open();
     }
 
     public void openAddDashCamDialog() {
@@ -83,7 +113,7 @@ public class DashCamListView extends VerticalLayout {
             SimCardImpl simCard = simCardComboBox.getValue();
 
             if (!name.isEmpty() && !drid.isEmpty()) {
-                DashCamImpl newDashCam = new DashCamImpl(null, name, drid, imei, simCard, null);
+                DashCamImpl newDashCam = new DashCamImpl(null, name, drid, imei, simCard, null,null);
                 dashCamService.save(newDashCam);
 
                 dataProvider.getItems().add(newDashCam);
@@ -129,17 +159,34 @@ public class DashCamListView extends VerticalLayout {
         binder.forField(imeiField)
                 .asRequired("IMEI is required")
                 .bind(DashCamImpl::getIMEI, DashCamImpl::setIMEI);
-        binder.forField(simCardComboBox)
+     /*   binder.forField(simCardComboBox)
                 .asRequired("SIM Card is required")
                 .bind(DashCamImpl::getSimCard, DashCamImpl::setSimCard);
-
+*/
         binder.setBean(dashCam);
 
         Button saveButton = new Button("Save", event -> {
             if (binder.validate().isOk()) {
+
+                SimCardImpl selectedSimCard = simCardComboBox.getValue();
+                System.out.println("Selected SIM card: " + selectedSimCard);
+                System.out.println("Current DashCam SIM card: " + dashCam.getSimCard());
+                if (!selectedSimCard.getId().equals(dashCam.getSimCard().getId())) {
+                    simCardService.closePreviousSimCardHistory(dashCam);
+
+                    SimCardHistoryImpl newHistory = new SimCardHistoryImpl();
+                    newHistory.setDashCam(dashCam);
+                    newHistory.setSimCard(selectedSimCard);
+                    newHistory.setStartDate(LocalDate.now());
+                    simCardService.saveSimCardHistory(newHistory);
+
+                    Notification.show("Sim card date changed!");
+                    dashCam.setSimCard(selectedSimCard);
+                }
                 dashCamService.save(dashCam);
                 dataProvider.refreshAll();
                 Notification.show("Dashcam updated");
+
                 dialog.close();
             } else {
                 Notification.show("Please fill all required fields!");
@@ -152,6 +199,9 @@ public class DashCamListView extends VerticalLayout {
         dialog.add(formLayout, new HorizontalLayout(saveButton, cancelButton));
 
         dialog.open();
+
+        UI.getCurrent().getPage().executeJs("window.openSimCardHistory = function(simCardId) { $0.$server.openSimCardHistoryDialog(simCardId); }", getElement());
+
     }
 
     private void applyFilter() {
