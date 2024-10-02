@@ -43,7 +43,6 @@ public class BusListView extends VerticalLayout {
         this.busService = busService;
         this.dashCamService = dashCamService;
 
-        // Настройка таблицы с данными
         List<SchoolBusImpl> buses = busService.getAllBuses();
         dataProvider = new ListDataProvider<>(buses);
         grid.setDataProvider(dataProvider);
@@ -57,24 +56,19 @@ public class BusListView extends VerticalLayout {
 */
         addColumnsDynamically();
 
-        // Кнопка для возврата назад
         backButton.addClickListener(event -> UI.getCurrent().getPage().getHistory().back());
 
-        // Кнопка для добавления нового автобуса
         addBusButton.addClickListener(event -> openAddBusDialog());
 
-        // Настройка фильтра
         filterText.setPlaceholder("Filter by name...");
         filterText.addValueChangeListener(event -> applyFilter());
 
-        // Горизонтальный макет для фильтра и кнопки добавления автобуса
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addBusButton);
         toolbar.setWidthFull();  // Занять всю ширину
         toolbar.setSpacing(true);  // Добавить отступы между элементами
 
         grid.addItemDoubleClickListener(event->openEditDialog(event.getItem()));
 
-        // Добавляем компоненты на страницу
         add(backButton, toolbar, grid);
 
     }
@@ -88,9 +82,9 @@ public class BusListView extends VerticalLayout {
             if("id".equals(field.getName())){
                 continue;
             }
-            // Проверяем наличие аннотации DisplayName
+
             DisplayName displayName = field.getAnnotation(DisplayName.class);
-            String header = displayName != null ? displayName.value() : field.getName(); // Используем имя аннотации, если оно есть
+            String header = displayName != null ? displayName.value() : field.getName();
 
             grid.addColumn(item -> {
                 try {
@@ -170,6 +164,10 @@ public class BusListView extends VerticalLayout {
         terminalField.setItems(Terminal.values());
         terminalField.setValue(bus.getTerminal());
 
+        ComboBox<DashCamImpl> dashCameralField = new ComboBox<>("Dash camera");
+        dashCameralField.setItems(dashCamService.getAllDashCameras());
+        dashCameralField.setValue(bus.getDashCam());
+
         binder.forField(nameField)
                 .asRequired("Name is required")
                 .bind(SchoolBusImpl::getName,SchoolBusImpl::setName);
@@ -179,6 +177,9 @@ public class BusListView extends VerticalLayout {
         binder.forField(terminalField)
                 .asRequired("Terminal is required")
                 .bind(SchoolBusImpl::getTerminal,SchoolBusImpl::setTerminal);
+        binder.forField(dashCameralField)
+                .asRequired("Dash camera is required")
+                .bind(SchoolBusImpl::getDashCam,SchoolBusImpl::setDashCam);
 
         binder.setBean(bus);
 
@@ -197,7 +198,7 @@ public class BusListView extends VerticalLayout {
 
         Button cancelButton = new Button("Cancel",event->dialog.close());
 
-        formLayout.add(nameField,typeField,terminalField);
+        formLayout.add(nameField,typeField,terminalField,dashCameralField);
         dialog.add(formLayout,new HorizontalLayout(saveButton,cancelButton));
 
         dialog.open();
