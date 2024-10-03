@@ -11,10 +11,13 @@ import java.util.List;
 
 @Repository
 public interface SimCardHistoryRepository extends JpaRepository<SimCardHistoryImpl,Integer> {
-    SimCardHistoryImpl findCurrentByDashCam(DashCamImpl dashCam);
+    SimCardHistoryImpl findByDashCamAndEndDateIsNull(DashCamImpl dashCam);
 
     SimCardHistoryImpl findTopBySimCardOrderByStartDateDesc(SimCardImpl simCard);
 
     List<SimCardHistoryImpl> getSimCardHistoryBySimCardId(Integer simCardId);
+
+    List<SimCardHistoryImpl> getSimCardHistoryByDashCamId(Integer simCardId);
+
 
 }

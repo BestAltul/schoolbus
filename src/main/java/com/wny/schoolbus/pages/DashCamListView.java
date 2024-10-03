@@ -7,6 +7,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -25,6 +26,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Route("dashcam-list")
 public class DashCamListView extends VerticalLayout {
@@ -53,15 +55,28 @@ public class DashCamListView extends VerticalLayout {
             SimCardHistoryImpl lastHistory = simCardService.getLastSimCardHistory(dashCam.getSimCard());
 
             if (lastHistory != null) {
-                Anchor anchor = new Anchor();
-                anchor.setHref("#");
-                anchor.setText(lastHistory.getStartDate().toString());
-                anchor.getElement().setAttribute("onclick", "openSimCardHistory(" + dashCam.getSimCard().getId() + ")");
+                // Создаем кнопку вместо ссылки
+                Button simCardHistoryButton = new Button("Show sim card history", event -> {
+                    Integer simCardId = dashCam.getSimCard().getId();
+                    List<SimCardHistoryImpl> history = simCardService.getSimCardHistoryByDashCamId(dashCam.getId());
 
-                return anchor;
+                    // Открываем модальное окно с историей SIM-карты
+                    openSimCardHistoryModal(history);
+                });
+
+                simCardHistoryButton.getStyle().set("background", "none");
+                simCardHistoryButton.getStyle().set("border", "none");
+                simCardHistoryButton.getStyle().set("color", "blue");
+                simCardHistoryButton.getStyle().set("text-decoration", "underline");
+                simCardHistoryButton.getStyle().set("cursor", "pointer");
+
+                return simCardHistoryButton;
+
             } else {
                 return new Span("N/A");
             }
+
+
         })).setHeader("Last SIM Change");
 
         grid.addColumn(dashCam -> dashCam.getSchoolBus() != null ? dashCam.getSchoolBus().getName() : "N/A").setHeader("School Bus");
@@ -82,21 +97,22 @@ public class DashCamListView extends VerticalLayout {
         add(backButton, toolbar, grid);
     }
 
-    public void openSimCardHistoryDialog(Integer simCardId) {
+    public void openSimCardHistoryModal(List<SimCardHistoryImpl> history){
+
         Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("Sim card history");
 
-        List<SimCardHistoryImpl> simCardHistories = simCardService.getSimCardHistoryBySimCardId(simCardId);
+        VerticalLayout content = new VerticalLayout();
+        for(SimCardHistoryImpl item: history){
+            content.add(new Paragraph("since: "+item.getStartDate()+" to: "+item.getEndDate()+", sim card number: "+item.getSimCard().getSimCardNumber()));
+        }
+        dialog.add(content);
 
-        Grid<SimCardHistoryImpl> historyGrid = new Grid<>(SimCardHistoryImpl.class);
-        historyGrid.setItems(simCardHistories);
+        Button closeButton = new Button("Close",event->dialog.close());
+        dialog.getFooter().add(closeButton);
 
-        historyGrid.addColumn(SimCardHistoryImpl::getStartDate).setHeader("Start Date");
-        historyGrid.addColumn(SimCardHistoryImpl::getEndDate).setHeader("End Date");
-        historyGrid.addColumn(history -> history.getDashCam().getName()).setHeader("DashCam");
-        historyGrid.addColumn(history -> history.getSimCard().getSimCardNumber()).setHeader("SIM Card Number");
-
-        dialog.add(historyGrid);
         dialog.open();
+
     }
 
     public void openAddDashCamDialog() {
@@ -113,6 +129,11 @@ public class DashCamListView extends VerticalLayout {
         simCardComboBox.setItems(simCards);
         simCardComboBox.setItemLabelGenerator(SimCardImpl::getSimCardNumber);
         simCardComboBox.setPlaceholder("Select SIM card");
+
+  /*      simCardComboBox.setItems(query -> {
+            String filter = query.getFilter().orElse("");
+            return (Stream<SimCardImpl>) simCardService.getSimCardsByFilter(filter);
+        });*/
 
         Button saveButton = new Button("Save", event -> {
             String name = nameField.getValue();

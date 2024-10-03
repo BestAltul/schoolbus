@@ -9,6 +9,7 @@ import com.wny.schoolbus.repositories.SimCardRepository;
 import com.wny.schoolbus.services.SimCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.stream.Collectors;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,7 +30,7 @@ public class SimCardServiceImpl implements SimCardService {
     }
 
     public void closePreviousSimCardHistory(DashCamImpl dashCam) {
-        SimCardHistoryImpl currentHistory = simCardHistoryRepository.findCurrentByDashCam(dashCam);
+        SimCardHistoryImpl currentHistory = simCardHistoryRepository.findByDashCamAndEndDateIsNull(dashCam);
         if (currentHistory != null) {
             currentHistory.setEndDate(LocalDate.now());
             simCardHistoryRepository.save(currentHistory);
@@ -47,4 +48,21 @@ public class SimCardServiceImpl implements SimCardService {
     public List<SimCardHistoryImpl> getSimCardHistoryBySimCardId(Integer simCardId){
         return simCardHistoryRepository.getSimCardHistoryBySimCardId(simCardId);
     }
+    public List<SimCardHistoryImpl> getSimCardHistoryByDashCamId(Integer dashCamId){
+        return simCardHistoryRepository.getSimCardHistoryByDashCamId(dashCamId);
+    }
+
+    public List<SimCardImpl> getSimCardsByFilter(String filter) {
+        // Если фильтр пустой, возвращаем все SIM-карты
+        if (filter == null || filter.isEmpty()) {
+            return getAllSimCards(); // Предполагается, что у вас есть этот метод
+        }
+
+        // Получаем все SIM-карты и фильтруем по номеру
+        List<SimCardImpl> allSimCards = getAllSimCards();
+        return allSimCards.stream()
+                .filter(simCard -> simCard.getSimCardNumber().toLowerCase().contains(filter.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
 }
