@@ -64,8 +64,8 @@ public class BusListView extends VerticalLayout {
         filterText.addValueChangeListener(event -> applyFilter());
 
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addBusButton);
-        toolbar.setWidthFull();  // Занять всю ширину
-        toolbar.setSpacing(true);  // Добавить отступы между элементами
+        toolbar.setWidthFull();
+        toolbar.setSpacing(true);
 
         grid.addItemDoubleClickListener(event->openEditDialog(event.getItem()));
 

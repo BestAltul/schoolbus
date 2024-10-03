@@ -6,6 +6,8 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,6 +21,7 @@ import com.wny.schoolbus.entities.impl.SimCardHistoryImpl;
 import com.wny.schoolbus.entities.impl.SimCardImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 import com.wny.schoolbus.services.impl.SimCardServiceImpl;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -46,15 +49,20 @@ public class DashCamListView extends VerticalLayout {
         grid.addColumn(DashCamImpl::getName).setHeader("Name");
         grid.addColumn(DashCamImpl::getDRID).setHeader("DRID");
         grid.addColumn(dashCam -> dashCam.getSimCard().getSimCardNumber()).setHeader("SIM Card Number");
-        grid.addColumn(dashCam -> {
+        grid.addColumn(new ComponentRenderer<>(dashCam -> {
             SimCardHistoryImpl lastHistory = simCardService.getLastSimCardHistory(dashCam.getSimCard());
-            if (lastHistory != null) {
-                return "<a href='#' onclick='openSimCardHistory(" + dashCam.getSimCard().getId() + ")'>" + lastHistory.getStartDate() + "</a>";
 
+            if (lastHistory != null) {
+                Anchor anchor = new Anchor();
+                anchor.setHref("#");
+                anchor.setText(lastHistory.getStartDate().toString());
+                anchor.getElement().setAttribute("onclick", "openSimCardHistory(" + dashCam.getSimCard().getId() + ")");
+
+                return anchor;
             } else {
-                return "N/A";
+                return new Span("N/A");
             }
-        }).setHeader("Last SIM Change");
+        })).setHeader("Last SIM Change");
 
         grid.addColumn(dashCam -> dashCam.getSchoolBus() != null ? dashCam.getSchoolBus().getName() : "N/A").setHeader("School Bus");
 
@@ -159,10 +167,7 @@ public class DashCamListView extends VerticalLayout {
         binder.forField(imeiField)
                 .asRequired("IMEI is required")
                 .bind(DashCamImpl::getIMEI, DashCamImpl::setIMEI);
-     /*   binder.forField(simCardComboBox)
-                .asRequired("SIM Card is required")
-                .bind(DashCamImpl::getSimCard, DashCamImpl::setSimCard);
-*/
+
         binder.setBean(dashCam);
 
         Button saveButton = new Button("Save", event -> {

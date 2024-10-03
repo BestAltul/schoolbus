@@ -44,8 +44,7 @@ public class WebSecurityConfig {
                                 "/images/**",    // Изображения
                                 "/css/**",       // CSS файлы
                                 "/js/**",        // JavaScript файлы
-                                "/favicon.ico",  // Иконка сайта
-                                "/index.html"    // Главная страница
+                                "/favicon.ico"  // Иконка сайта
                         ).permitAll()
                         // Разрешаем доступ к API для аутентификации и регистрации без авторизации
                         .requestMatchers(
