@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Slf4j
-        //@CssImport("./styles/styles.css")
+@CssImport("./styles/styles.css")
 @Route("dashcam-list")
 public class DashCamListView extends VerticalLayout {
     private final DashCamServiceImpl dashCamService;
@@ -97,7 +97,7 @@ public class DashCamListView extends VerticalLayout {
 
         logicSelector.setPlaceholder("Select the filter logic");
         logicSelector.setItems("AND","OR");
-        logicSelector.addClassName("centered-red-text");
+        logicSelector.addClassName("centered-green-text");
         logicSelector.setValue("AND");
         logicSelector.addValueChangeListener(event->applyFilter());
 

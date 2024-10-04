@@ -1,3 +1,9 @@
+import { injectGlobalCss } from 'Frontend/generated/jar-resources/theme-util.js';
+
+import { css, unsafeCSS, registerStyles } from '@vaadin/vaadin-themable-mixin';
+import $cssFromFile_0 from 'Frontend/styles/styles.css?inline';
+
+injectGlobalCss($cssFromFile_0.toString(), 'CSSImport end', document);
 import '@vaadin/polymer-legacy-adapter/style-modules.js';
 import '@vaadin/vaadin-lumo-styles/color-global.js';
 import '@vaadin/vaadin-lumo-styles/typography-global.js';
@@ -16,7 +22,7 @@ import '@vaadin/app-layout/theme/lumo/vaadin-drawer-toggle.js';
 import '@vaadin/avatar/theme/lumo/vaadin-avatar.js';
 import '@vaadin/avatar-group/theme/lumo/vaadin-avatar-group.js';
 import '@vaadin/checkbox/theme/lumo/vaadin-checkbox.js';
-import '@vaadin/checkbox-group/src/vaadin-checkbox-group.js';
+import '@vaadin/checkbox-group/theme/lumo/vaadin-checkbox-group.js';
 import '@vaadin/combo-box/theme/lumo/vaadin-combo-box.js';
 import 'Frontend/generated/jar-resources/flow-component-renderer.js';
 import 'Frontend/generated/jar-resources/comboBoxConnector.js';
@@ -41,7 +47,7 @@ import '@vaadin/grid/theme/lumo/vaadin-grid.js';
 import '@vaadin/grid/theme/lumo/vaadin-grid-column.js';
 import '@vaadin/grid/theme/lumo/vaadin-grid-sorter.js';
 import 'Frontend/generated/jar-resources/gridConnector.js';
-import '@vaadin/tooltip/src/vaadin-tooltip.js';
+import '@vaadin/tooltip/theme/lumo/vaadin-tooltip.js';
 import 'Frontend/generated/jar-resources/vaadin-grid-flow-selection-column.js';
 import '@vaadin/icons/vaadin-iconset.js';
 import '@vaadin/icon/theme/lumo/vaadin-icon.js';
@@ -51,7 +57,7 @@ import '@vaadin/login/theme/lumo/vaadin-login-form.js';
 import '@vaadin/login/theme/lumo/vaadin-login-overlay.js';
 import 'Frontend/generated/jar-resources/menubarConnector.js';
 import '@vaadin/menu-bar/theme/lumo/vaadin-menu-bar.js';
-import '@vaadin/message-input/src/vaadin-message-input.js';
+import '@vaadin/message-input/theme/lumo/vaadin-message-input.js';
 import 'Frontend/generated/jar-resources/messageListConnector.js';
 import '@vaadin/message-list/theme/lumo/vaadin-message-list.js';
 import '@vaadin/notification/theme/lumo/vaadin-notification.js';
