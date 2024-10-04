@@ -3,6 +3,7 @@ package com.wny.schoolbus.pages;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -23,11 +24,14 @@ import com.wny.schoolbus.entities.impl.SimCardImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 import com.wny.schoolbus.services.impl.SimCardServiceImpl;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
+@Slf4j
+        //@CssImport("./styles/styles.css")
 @Route("dashcam-list")
 public class DashCamListView extends VerticalLayout {
     private final DashCamServiceImpl dashCamService;
@@ -37,6 +41,9 @@ public class DashCamListView extends VerticalLayout {
     private final Button addDashCamButton = new Button("Add a new dashcam");
     private final Button backButton = new Button("Back");
     private final TextField filterText = new TextField();
+    private final TextField filterDRID = new TextField();
+    ComboBox<String> logicSelector = new ComboBox<>();
+
 
     public DashCamListView(DashCamServiceImpl dashCamService, SimCardServiceImpl simCardService) {
         this.dashCamService = dashCamService;
@@ -88,7 +95,17 @@ public class DashCamListView extends VerticalLayout {
         filterText.setPlaceholder("Filter by name...");
         filterText.addValueChangeListener(event -> applyFilter());
 
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addDashCamButton);
+        logicSelector.setPlaceholder("Select the filter logic");
+        logicSelector.setItems("AND","OR");
+        logicSelector.addClassName("centered-red-text");
+        logicSelector.setValue("AND");
+        logicSelector.addValueChangeListener(event->applyFilter());
+
+        filterDRID.setPlaceholder("Filter by DRID...");
+        filterDRID.addValueChangeListener(event -> applyFilter());
+
+
+        HorizontalLayout toolbar = new HorizontalLayout(filterText,logicSelector, filterDRID,addDashCamButton);
         toolbar.setWidthFull();
         toolbar.setSpacing(true);
 
@@ -231,7 +248,16 @@ public class DashCamListView extends VerticalLayout {
     }
 
     private void applyFilter() {
-        String filterValue = filterText.getValue().trim().toLowerCase();
-        dataProvider.setFilter(dashCam -> dashCam.getName().toLowerCase().contains(filterValue));
+        String filterValueName = filterText.getValue().trim().toLowerCase();
+        String filterValueDRID = filterDRID.getValue().trim().toLowerCase();
+        String selectedLogic = logicSelector.getValue();
+
+        if("AND".equals(selectedLogic)){
+            dataProvider.setFilter(dashCam -> dashCam.getName().toLowerCase().contains(filterValueName) &&
+                    dashCam.getDRID().toLowerCase().contains(filterValueDRID));
+        }else if("OR".equals(selectedLogic)){
+            dataProvider.setFilter(dashCam -> dashCam.getName().toLowerCase().contains(filterValueDRID) ||
+                    dashCam.getDRID().toLowerCase().contains(filterValueDRID));
+        }
     }
 }
