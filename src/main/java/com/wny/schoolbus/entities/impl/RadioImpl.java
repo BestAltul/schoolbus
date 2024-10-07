@@ -1,26 +1,31 @@
 package com.wny.schoolbus.entities.impl;
 
-import com.wny.schoolbus.entities.Radio;
-import com.wny.schoolbus.entities.SimCard;
+import com.wny.schoolbus.entities.Device;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
+import java.util.List;
+
+@Getter
+@Setter
 @Entity
-@Table(name="radio")
-public class RadioImpl implements Radio {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class RadioImpl extends Device {
 
-    @ManyToOne
-    @JoinColumn(name="sim_card_id")
-    private final SimCardImpl simCard;
+    @OneToMany(mappedBy = "device")
+    private List<SimCardHistoryImpl> simCardHistory;
 
-    private final String IMEI;
 
-    @OneToOne(mappedBy = "radio")
-    private SchoolBusImpl schoolBus;
+    public RadioImpl(String name, String imei, SimCardImpl simCard) {
+        super(name);
+    }
+
+    @Override
+    public String toString(){
+        return this.getName()+" "+this.getDescription();
+    }
+
+    public String getDescription(){
+        return this.getName()+" "+getDescription();
+    }
+
 }

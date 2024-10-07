@@ -1,5 +1,6 @@
 package com.wny.schoolbus.services.impl;
 
+import com.wny.schoolbus.entities.Device;
 import com.wny.schoolbus.entities.SimCardHistory;
 import com.wny.schoolbus.entities.impl.DashCamImpl;
 import com.wny.schoolbus.entities.impl.SimCardHistoryImpl;
@@ -29,8 +30,8 @@ public class SimCardServiceImpl implements SimCardService {
         simCardRepository.save(simCard);
     }
 
-    public void closePreviousSimCardHistory(DashCamImpl dashCam) {
-        SimCardHistoryImpl currentHistory = simCardHistoryRepository.findByDashCamAndEndDateIsNull(dashCam);
+    public void closePreviousSimCardHistory(Device device) {
+        SimCardHistoryImpl currentHistory = simCardHistoryRepository.findByDeviceAndEndDateIsNull(device);
         if (currentHistory != null) {
             currentHistory.setEndDate(LocalDate.now());
             simCardHistoryRepository.save(currentHistory);
@@ -48,8 +49,12 @@ public class SimCardServiceImpl implements SimCardService {
     public List<SimCardHistoryImpl> getSimCardHistoryBySimCardId(Integer simCardId){
         return simCardHistoryRepository.getSimCardHistoryBySimCardId(simCardId);
     }
-    public List<SimCardHistoryImpl> getSimCardHistoryByDashCamId(Integer dashCamId){
-        return simCardHistoryRepository.getSimCardHistoryByDashCamId(dashCamId);
+//    public List<SimCardHistoryImpl> getSimCardHistoryByDashCamId(Integer dashCamId){
+//        return simCardHistoryRepository.getSimCardHistoryByDashCamId(dashCamId);
+//    }
+
+    public List<SimCardHistoryImpl> getSimCardHistoryByDashCamId(Integer deviceId){
+        return simCardHistoryRepository.getSimCardHistoryByDeviceId(deviceId);
     }
 
     public List<SimCardImpl> getSimCardsByFilter(String filter) {

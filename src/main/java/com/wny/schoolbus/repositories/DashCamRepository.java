@@ -1,5 +1,6 @@
 package com.wny.schoolbus.repositories;
 
+import com.wny.schoolbus.entities.Device;
 import com.wny.schoolbus.entities.impl.DashCamImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

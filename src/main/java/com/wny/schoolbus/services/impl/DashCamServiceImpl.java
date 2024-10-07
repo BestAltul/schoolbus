@@ -1,5 +1,6 @@
 package com.wny.schoolbus.services.impl;
 
+import com.wny.schoolbus.entities.Device;
 import com.wny.schoolbus.entities.impl.DashCamImpl;
 import com.wny.schoolbus.repositories.DashCamRepository;
 import com.wny.schoolbus.services.DashCamService;

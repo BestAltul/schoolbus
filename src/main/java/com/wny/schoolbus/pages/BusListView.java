@@ -43,17 +43,15 @@ public class BusListView extends VerticalLayout {
         this.busService = busService;
         this.dashCamService = dashCamService;
 
+        setSizeFull();
+        setSpacing(true);
+
         List<SchoolBusImpl> buses = busService.getAllBuses();
         dataProvider = new ListDataProvider<>(buses);
         grid.setDataProvider(dataProvider);
 
         grid.removeAllColumns();
 
-        //grid.addColumn(SchoolBusImpl::getId).setHeader("ID");
-     /*   grid.addColumn(SchoolBusImpl::getName).setHeader("Name");
-        grid.addColumn(SchoolBusImpl::getBusType).setHeader("Type");
-        grid.addColumn(SchoolBusImpl::getTerminal).setHeader("Terminal");
-*/
         addColumnsDynamically();
 
         backButton.addClickListener(event -> UI.getCurrent().getPage().getHistory().back());

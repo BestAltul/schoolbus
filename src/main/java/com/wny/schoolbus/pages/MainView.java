@@ -13,67 +13,93 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.wny.schoolbus.entities.impl.DashCamImpl;
+import com.wny.schoolbus.entities.impl.RadioImpl;
+import com.wny.schoolbus.services.impl.BusServiceImpl;
+import com.wny.schoolbus.services.impl.DashCamServiceImpl;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.wny.schoolbus.services.impl.RadioServiceImpl;
+import com.wny.schoolbus.services.impl.SimCardServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
+@org.springframework.stereotype.Component
 @Route("")
 public class MainView extends AppLayout {
 
-    private boolean isDrawerOpened = true;
     private Div contentArea;
+    private BusServiceImpl busService;
+    private DashCamServiceImpl dashCamService;
+    private RadioServiceImpl radioService;
+    private SimCardServiceImpl simCardService;
 
-    public MainView() {
+    @Autowired
+    public MainView(BusServiceImpl busService,DashCamServiceImpl dashCamService, RadioServiceImpl radioService, SimCardServiceImpl simCardService) {
+        this.busService = busService;
+        this.dashCamService = dashCamService;
+        this.simCardService = simCardService;
+        this.radioService   = radioService;
 
-        try{
+        initHeader();
+        initDrawer();
+        initContentArea();
+    }
 
-            Image logo = new Image("images/logo.png", "Logo");
-            logo.setWidth("150px");
+    private void initHeader() {
+        Image logo = new Image("images/logo.png", "Logo");
+        logo.setWidth("150px");
 
-            Icon menuIcon = new Icon(VaadinIcon.MENU);
-            Button toggleDrawerButton = new Button(menuIcon, event -> toggleDrawerState());
+        Icon menuIcon = new Icon(VaadinIcon.MENU);
+        Button toggleDrawerButton = new Button(menuIcon, event -> toggleDrawerState());
 
-            toggleDrawerButton.setWidth("50px");
-            toggleDrawerButton.setHeight("50px");
+        toggleDrawerButton.setWidth("50px");
+        toggleDrawerButton.setHeight("50px");
 
-            HorizontalLayout header = new HorizontalLayout(toggleDrawerButton, logo);
-            header.setWidthFull();  // Занимаем всю ширину панели
-            header.setAlignItems(Alignment.CENTER);
+        HorizontalLayout header = new HorizontalLayout(toggleDrawerButton, logo);
+        header.setWidthFull();
+        header.setAlignItems(Alignment.CENTER);
 
-            addToNavbar(header);
+        addToNavbar(header);
+    }
 
-            Tab busesTab = new Tab("Buses");
-            Tab dashCamTab = new Tab("Dash cameras");
-            Tab simCardTab = new Tab("Sim cards");
+    private void initDrawer() {
+        Tab busesTab = new Tab("Buses");
+        Tab dashCamTab = new Tab("Dash cameras");
+        Tab radioTab = new Tab("Radios");
+        Tab simCardTab = new Tab("Sim cards");
 
-            Tabs tabs = new Tabs(busesTab,dashCamTab,simCardTab);
-            tabs.setOrientation(Tabs.Orientation.VERTICAL);
+        Tabs tabs = new Tabs(busesTab, dashCamTab, radioTab,simCardTab);
+        tabs.setOrientation(Tabs.Orientation.VERTICAL);
 
-            tabs.addSelectedChangeListener(event->{
-                Tab selectedTab = event.getSelectedTab();
-                if(selectedTab.equals(busesTab)){
-                    setContent(createContent("Information about buses"));
-                }else if(selectedTab.equals(dashCamTab)){
-                    setContent(createContent("Information about dash cameras"));
-                }else if(selectedTab.equals(simCardTab)){
-                    setContent(createContent("Information about sim cards"));
-                }
-            });
+        tabs.addSelectedChangeListener(event -> {
+            Tab selectedTab = event.getSelectedTab();
 
-            VerticalLayout menuLayout = new VerticalLayout(tabs);
-            addToDrawer(menuLayout);
+            contentArea.removeAll();
 
-            contentArea = new Div();
-            contentArea.setSizeFull();
-            setContent(createContent("Select an option from the menu to see details"));
+            if (selectedTab.equals(busesTab)) {
+                replaceContent(new BusListView(busService,dashCamService));
+            } else if (selectedTab.equals(dashCamTab)) {
+                replaceContent(new DeviceListView("dashcam",dashCamService,radioService,simCardService));
+            } else if (selectedTab.equals(radioTab)) {
+                replaceContent(new DeviceListView("radio",dashCamService,radioService,simCardService));
+            } else if (selectedTab.equals(simCardTab)) {
+                replaceContent(new SimCardListView(simCardService));
+            }
+        });
 
-        }catch (Exception e){
-            e.printStackTrace();
-            throw  e;
-        }
+        VerticalLayout menuLayout = new VerticalLayout(tabs);
+        addToDrawer(menuLayout);
+    }
 
+    private void initContentArea() {
+        contentArea = new Div();
+        contentArea.setSizeFull();
+        setContent(contentArea);
+
+        replaceContent(createContent("Select an option from the menu to see details"));
     }
 
     private void toggleDrawerState() {
-        isDrawerOpened = !isDrawerOpened;
-        setDrawerOpened(isDrawerOpened);
+        setDrawerOpened(!isDrawerOpened());
     }
 
     private Component createContent(String text) {
@@ -81,7 +107,8 @@ public class MainView extends AppLayout {
         contentLayout.add(text);
         return contentLayout;
     }
-    public void setContent(Component content) {
+
+    private void replaceContent(Component content) {
         contentArea.removeAll();
         contentArea.add(content);
     }
