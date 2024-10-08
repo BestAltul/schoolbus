@@ -20,6 +20,9 @@ public class RadioImpl extends Device {
         this.IMEI = imei;
         this.simCard = simCard;
     }
+    public RadioImpl() {
+        super();
+    }
 
     @OneToOne(mappedBy = "radio")
     private SchoolBusImpl schoolBus;
@@ -31,11 +34,11 @@ public class RadioImpl extends Device {
 
     @Override
     public String toString(){
-        return this.getName()+" "+this.getDescription();
+        return this.name+" "+this.getDescription();
     }
 
     public String getDescription(){
-        return this.getName()+" "+this.IMEI;
+        return this.name+" "+this.IMEI;
     }
 
 }

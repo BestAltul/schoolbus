@@ -6,22 +6,27 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NonNull
-    private String name;
+    protected String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sim_card_id")
     protected SimCardImpl simCard;
 
     public abstract SchoolBusImpl getSchoolBus();
+
+    public Device(@NonNull String name) {
+        this.name = name;
+    }
 
     protected String IMEI;
 }
