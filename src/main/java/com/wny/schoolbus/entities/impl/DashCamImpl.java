@@ -27,7 +27,7 @@ public class DashCamImpl extends Device{
         this.simCard = simCard;
     }
 
-    @OneToOne(mappedBy = "dashCam")
+    @OneToOne(mappedBy = "dashCam",cascade = CascadeType.ALL)
     private SchoolBusImpl schoolBus;
 
     @Override

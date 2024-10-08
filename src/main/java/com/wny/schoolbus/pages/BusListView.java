@@ -15,6 +15,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.wny.schoolbus.annotations.DisplayName;
+import com.wny.schoolbus.entities.Vehicle;
 import com.wny.schoolbus.entities.impl.DashCamImpl;
 import com.wny.schoolbus.entities.impl.RadioImpl;
 import com.wny.schoolbus.enums.BusType;
@@ -24,6 +25,8 @@ import java.lang.reflect.Field;
 
 
 import com.wny.schoolbus.entities.impl.SchoolBusImpl;
+import com.wny.schoolbus.factory.VehicleFactory;
+import com.wny.schoolbus.factory.impl.SchoolBusFactoryImpl;
 import com.wny.schoolbus.services.impl.BusServiceImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 import com.wny.schoolbus.services.impl.RadioServiceImpl;
@@ -137,7 +140,9 @@ public class BusListView extends VerticalLayout {
             DashCamImpl dashCam = dashCamComboBox.getValue();
 
                 if (!name.isEmpty()) {
-                    SchoolBusImpl newBus = new SchoolBusImpl(name,type,terminal,dashCam,radio);
+                    //SchoolBusImpl newBus = new SchoolBusImpl(name,type,terminal,dashCam,radio);
+                    VehicleFactory vehicleFactory = new SchoolBusFactoryImpl();
+                    SchoolBusImpl newBus = vehicleFactory.createVehicle(name,type,terminal,dashCam,radio);
                     busService.save(newBus);
 
                     dataProvider.getItems().add(newBus);

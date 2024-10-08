@@ -5,6 +5,7 @@ import com.wny.schoolbus.entities.Vehicle;
 import com.wny.schoolbus.enums.BusType;
 import com.wny.schoolbus.enums.Terminal;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 
 
@@ -12,6 +13,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@Transactional
 @Entity
 @Table(name="school_bus")
 public class SchoolBusImpl implements Vehicle {
