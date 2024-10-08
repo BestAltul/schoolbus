@@ -22,10 +22,17 @@ public class DashCamImpl extends Device{
 
     public DashCamImpl(String name, String drid, String imei, SimCardImpl simCard) {
         super(name);
-        drid = drid;
-        imei = imei;
-        simCard = simCard;
+        this.DRID = drid;
+        this.IMEI = imei;
+        this.simCard = simCard;
+    }
 
+    @OneToOne(mappedBy = "dashCam")
+    private SchoolBusImpl schoolBus;
+
+    @Override
+    public SchoolBusImpl getSchoolBus(){
+        return this.schoolBus;
     }
 
     @Override

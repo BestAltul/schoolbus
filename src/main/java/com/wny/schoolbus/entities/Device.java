@@ -3,14 +3,12 @@ package com.wny.schoolbus.entities;
 import com.wny.schoolbus.entities.impl.SchoolBusImpl;
 import com.wny.schoolbus.entities.impl.SimCardImpl;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
+@NoArgsConstructor
 public abstract class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +19,9 @@ public abstract class Device {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sim_card_id")
-    private SimCardImpl simCard;
+    protected SimCardImpl simCard;
 
-    @OneToOne(mappedBy = "radio")
-    private SchoolBusImpl schoolBus;
+    public abstract SchoolBusImpl getSchoolBus();
 
-    private String IMEI;
+    protected String IMEI;
 }
