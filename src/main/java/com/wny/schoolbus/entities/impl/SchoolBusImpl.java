@@ -37,11 +37,13 @@ public class SchoolBusImpl implements Vehicle {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="dashcam_id",referencedColumnName = "id")
+    @NonNull
     @DisplayName("Dash camera")
     private DashCamImpl dashCam;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="radio_id",referencedColumnName = "id")
+    @NonNull
     @DisplayName("Radio")
     private RadioImpl radio;
 }

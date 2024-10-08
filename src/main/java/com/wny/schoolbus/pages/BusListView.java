@@ -16,6 +16,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.wny.schoolbus.annotations.DisplayName;
 import com.wny.schoolbus.entities.impl.DashCamImpl;
+import com.wny.schoolbus.entities.impl.RadioImpl;
 import com.wny.schoolbus.enums.BusType;
 import com.wny.schoolbus.enums.Terminal;
 import com.vaadin.flow.data.binder.Binder;
@@ -25,6 +26,7 @@ import java.lang.reflect.Field;
 import com.wny.schoolbus.entities.impl.SchoolBusImpl;
 import com.wny.schoolbus.services.impl.BusServiceImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
+import com.wny.schoolbus.services.impl.RadioServiceImpl;
 
 import java.util.List;
 
@@ -33,15 +35,18 @@ public class BusListView extends VerticalLayout {
 
     private final BusServiceImpl busService;
     private final DashCamServiceImpl dashCamService;
+
+    private final RadioServiceImpl radioService;
     private final Grid<SchoolBusImpl> grid = new Grid<>(SchoolBusImpl.class);
     private ListDataProvider<SchoolBusImpl> dataProvider;
     private final Button addBusButton = new Button("Add a new bus");
     private final Button backButton = new Button("Back");
     private final TextField filterText = new TextField();
 
-    public BusListView(BusServiceImpl busService, DashCamServiceImpl dashCamService) {
+    public BusListView(BusServiceImpl busService, DashCamServiceImpl dashCamService, RadioServiceImpl radioService) {
         this.busService = busService;
         this.dashCamService = dashCamService;
+        this.radioService = radioService;
 
         setSizeFull();
         setSpacing(true);
@@ -113,19 +118,26 @@ public class BusListView extends VerticalLayout {
         terminalField.setPlaceholder("Select terminal");
 
         ComboBox<DashCamImpl> dashCamComboBox = new ComboBox<>("Dash camera");
-
         List<DashCamImpl> dashCamList = dashCamService.getAllDashCameras();
         dashCamComboBox.setItems(dashCamList);
         dashCamComboBox.setItemLabelGenerator(DashCamImpl::getDescription);
         dashCamComboBox.setPlaceholder("Select dash camera");
 
+        ComboBox<RadioImpl> radioComboBox = new ComboBox<>("Radio");
+        List<RadioImpl> radioList = radioService.getAllRadios();
+        radioComboBox.setItems(radioList);
+        radioComboBox.setItemLabelGenerator(RadioImpl::getDescription);
+        radioComboBox.setPlaceholder("Select radio");
+
         Button saveButton = new Button("Save", event->{
             String name = nameField.getValue();
             BusType type = typeField.getValue();
             Terminal terminal = terminalField.getValue();
+            RadioImpl radio = radioComboBox.getValue();
+            DashCamImpl dashCam = dashCamComboBox.getValue();
 
                 if (!name.isEmpty()) {
-                    SchoolBusImpl newBus = new SchoolBusImpl(name,type,terminal);
+                    SchoolBusImpl newBus = new SchoolBusImpl(name,type,terminal,dashCam,radio);
                     busService.save(newBus);
 
                     dataProvider.getItems().add(newBus);
@@ -139,7 +151,7 @@ public class BusListView extends VerticalLayout {
         });
         Button cancelButton = new Button("Cancel",event->dialog.close());
 
-        formLayout.add(nameField,typeField,dashCamComboBox,terminalField);
+        formLayout.add(nameField,typeField,dashCamComboBox,terminalField,radioComboBox);
         dialog.add(formLayout,new HorizontalLayout(saveButton,cancelButton));
 
         dialog.open();
@@ -166,6 +178,11 @@ public class BusListView extends VerticalLayout {
         dashCameralField.setItems(dashCamService.getAllDashCameras());
         dashCameralField.setValue(bus.getDashCam());
 
+        ComboBox<RadioImpl> radioField = new ComboBox<>("Camera");
+        radioField.setItems(radioService.getAllRadios());
+        radioField.setValue(bus.getRadio());
+
+
         binder.forField(nameField)
                 .asRequired("Name is required")
                 .bind(SchoolBusImpl::getName,SchoolBusImpl::setName);
@@ -178,6 +195,9 @@ public class BusListView extends VerticalLayout {
         binder.forField(dashCameralField)
                 .asRequired("Dash camera is required")
                 .bind(SchoolBusImpl::getDashCam,SchoolBusImpl::setDashCam);
+        binder.forField(radioField)
+                .asRequired("Dash camera is required")
+                .bind(SchoolBusImpl::getRadio,SchoolBusImpl::setRadio);
 
         binder.setBean(bus);
 
@@ -196,7 +216,7 @@ public class BusListView extends VerticalLayout {
 
         Button cancelButton = new Button("Cancel",event->dialog.close());
 
-        formLayout.add(nameField,typeField,terminalField,dashCameralField);
+        formLayout.add(nameField,typeField,terminalField,dashCameralField,radioField);
         dialog.add(formLayout,new HorizontalLayout(saveButton,cancelButton));
 
         dialog.open();

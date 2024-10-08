@@ -76,7 +76,7 @@ public class MainView extends AppLayout {
             contentArea.removeAll();
 
             if (selectedTab.equals(busesTab)) {
-                replaceContent(new BusListView(busService,dashCamService));
+                replaceContent(new BusListView(busService,dashCamService,radioService));
             } else if (selectedTab.equals(dashCamTab)) {
                 replaceContent(new DeviceListView("dashcam",dashCamService,radioService,simCardService));
             } else if (selectedTab.equals(radioTab)) {
