@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

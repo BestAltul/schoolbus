@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 @CssImport("./styles/styles.css")
 @Route("device-view")
-@Data
+//@Data
 public class DeviceListView extends VerticalLayout {
 
     private final RadioServiceImpl radioService;
@@ -72,7 +72,8 @@ public class DeviceListView extends VerticalLayout {
         deviceButton.addClickListener(event->openAddDeviceDialog());
 
         grid.setItems(deviceList.toArray(new Device[0]));
-        add(grid,deviceButton);
+        add(createToolbar(),grid);
+        add(deviceButton,grid);
 
     }
 
@@ -273,7 +274,6 @@ public class DeviceListView extends VerticalLayout {
         TextField imeiField = new TextField("IMEI");
 
         ComboBox<SimCardImpl> simCardComboBox = new ComboBox<>("SIM Card");
-
         List<SimCardImpl> simCards = simCardService.getAllSimCards();
         simCardComboBox.setItems(simCards);
         simCardComboBox.setItemLabelGenerator(SimCardImpl::getSimCardNumber);

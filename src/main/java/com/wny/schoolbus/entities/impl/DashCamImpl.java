@@ -17,7 +17,7 @@ public class DashCamImpl extends Device{
     private List<SimCardHistoryImpl> simCardHistory;
 
     public DashCamImpl() {
-        super("");
+        super();
     }
 
     public DashCamImpl(String name, String drid, String imei, SimCardImpl simCard) {
@@ -27,8 +27,8 @@ public class DashCamImpl extends Device{
         this.simCard = simCard;
     }
 
-    @OneToOne(mappedBy = "dashCam",cascade = CascadeType.ALL)
-    private SchoolBusImpl schoolBus;
+    @OneToOne(mappedBy = "dashCam")
+    protected SchoolBusImpl schoolBus;
 
     @Override
     public SchoolBusImpl getSchoolBus(){

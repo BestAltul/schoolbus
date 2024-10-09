@@ -123,7 +123,7 @@ public class BusListView extends VerticalLayout {
         ComboBox<DashCamImpl> dashCamComboBox = new ComboBox<>("Dash camera");
         List<DashCamImpl> dashCamList = dashCamService.getAllDashCameras();
         dashCamComboBox.setItems(dashCamList);
-        dashCamComboBox.setItemLabelGenerator(DashCamImpl::getDescription);
+        dashCamComboBox.setItemLabelGenerator(DashCamImpl::getName);
         dashCamComboBox.setPlaceholder("Select dash camera");
 
         ComboBox<RadioImpl> radioComboBox = new ComboBox<>("Radio");

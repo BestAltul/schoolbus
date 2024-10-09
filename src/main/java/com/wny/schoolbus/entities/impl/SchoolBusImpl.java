@@ -1,6 +1,7 @@
 package com.wny.schoolbus.entities.impl;
 
 import com.wny.schoolbus.annotations.DisplayName;
+import com.wny.schoolbus.entities.Device;
 import com.wny.schoolbus.entities.Vehicle;
 import com.wny.schoolbus.enums.BusType;
 import com.wny.schoolbus.enums.Terminal;
@@ -12,7 +13,6 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Transactional
 @Entity
 @Table(name="school_bus")
@@ -39,13 +39,18 @@ public class SchoolBusImpl implements Vehicle {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="dashcam_id",referencedColumnName = "id")
-    @NonNull
     @DisplayName("Dash camera")
     private DashCamImpl dashCam;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="radio_id",referencedColumnName = "id")
-    @NonNull
     @DisplayName("Radio")
     private RadioImpl radio;
+
+    public SchoolBusImpl(String name,BusType type, Terminal terminal,DashCamImpl dashCam, RadioImpl radio){
+        this.name = name;
+        this.busType = type;
+        this.dashCam = dashCam;
+        this.radio = radio;
+    }
 }
