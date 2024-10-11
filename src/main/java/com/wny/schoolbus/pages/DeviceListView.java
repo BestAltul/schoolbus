@@ -173,14 +173,29 @@ public class DeviceListView extends VerticalLayout {
         com.vaadin.flow.component.dialog.Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Sim card history");
 
-        VerticalLayout content = new VerticalLayout();
-        for(SimCardHistoryImpl item: history){
-            content.add(new Paragraph("since: "+item.getStartDate()+" to: "+item.getEndDate()+", sim card number: "+item.getSimCard().getSimCardNumber()));
-        }
+        Grid<SimCardHistoryImpl> historyGrid = new Grid<>(SimCardHistoryImpl.class);
+        historyGrid.setWidthFull();
+        historyGrid.removeAllColumns();
+
+        historyGrid.addColumn(SimCardHistoryImpl::getStartDate).setHeader("Start date").setAutoWidth(true);
+        historyGrid.addColumn(SimCardHistoryImpl::getEndDate).setHeader("End date").setAutoWidth(true);
+        historyGrid.addColumn(historySim->historySim.getSimCard().getSimCardNumber()).setHeader("Sim card number").setAutoWidth(true);
+        historyGrid.addColumn(historySim->historySim.getSimCard().getSimCardType()).setHeader("Type").setAutoWidth(true);
+
+        historyGrid.setItems(history);
+
+        VerticalLayout content = new VerticalLayout(historyGrid);
+        content.setWidthFull();
+//        for(SimCardHistoryImpl item: history){
+//            content.add(new Paragraph("since: "+item.getStartDate()+" to: "+item.getEndDate()+", sim card number: "+item.getSimCard().getSimCardNumber()));
+//        }
+
         dialog.add(content);
 
         Button closeButton = new Button("Close",event->dialog.close());
         dialog.getFooter().add(closeButton);
+
+        dialog.setWidth("80vw");
 
         dialog.open();
 
