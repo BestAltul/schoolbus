@@ -3,6 +3,7 @@ package com.wny.schoolbus.entities.impl;
 import com.wny.schoolbus.entities.Device;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.util.List;
 

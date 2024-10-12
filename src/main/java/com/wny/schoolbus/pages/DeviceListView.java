@@ -185,10 +185,8 @@ public class DeviceListView extends VerticalLayout {
         historyGrid.setItems(history);
 
         VerticalLayout content = new VerticalLayout(historyGrid);
+
         content.setWidthFull();
-//        for(SimCardHistoryImpl item: history){
-//            content.add(new Paragraph("since: "+item.getStartDate()+" to: "+item.getEndDate()+", sim card number: "+item.getSimCard().getSimCardNumber()));
-//        }
 
         dialog.add(content);
 

@@ -7,17 +7,21 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.wny.schoolbus.annotations.DisplayName;
+import com.wny.schoolbus.entities.Device;
 import com.wny.schoolbus.entities.Vehicle;
 import com.wny.schoolbus.entities.impl.DashCamImpl;
 import com.wny.schoolbus.entities.impl.RadioImpl;
+import com.wny.schoolbus.entities.impl.SimCardHistoryImpl;
 import com.wny.schoolbus.enums.BusType;
 import com.wny.schoolbus.enums.Terminal;
 import com.vaadin.flow.data.binder.Binder;
@@ -30,8 +34,11 @@ import com.wny.schoolbus.factory.impl.SchoolBusFactoryImpl;
 import com.wny.schoolbus.services.impl.BusServiceImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 import com.wny.schoolbus.services.impl.RadioServiceImpl;
+import com.wny.schoolbus.services.impl.SchoolBusHistoryServiceImpl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Route("bus-list")
 public class BusListView extends VerticalLayout {
@@ -45,11 +52,13 @@ public class BusListView extends VerticalLayout {
     private final Button addBusButton = new Button("Add a new bus");
     private final Button backButton = new Button("Back");
     private final TextField filterText = new TextField();
+    private final SchoolBusHistoryServiceImpl schoolBusHistoryService;
 
-    public BusListView(BusServiceImpl busService, DashCamServiceImpl dashCamService, RadioServiceImpl radioService) {
+    public BusListView(BusServiceImpl busService, DashCamServiceImpl dashCamService, RadioServiceImpl radioService,SchoolBusHistoryServiceImpl schoolBusHistoryService) {
         this.busService = busService;
         this.dashCamService = dashCamService;
         this.radioService = radioService;
+        this.schoolBusHistoryService = schoolBusHistoryService;
 
         setSizeFull();
         setSpacing(true);
@@ -99,10 +108,72 @@ public class BusListView extends VerticalLayout {
                     e.printStackTrace();
                     return "N/A";
                 }
-            }).setHeader(header);  // Устанавливаем пользовательское название колонки
+            }).setHeader(header);
         }
+
+        grid.addColumn(new ComponentRenderer<>(device -> {
+             List<Number> listNumber = schoolBusHistoryService.getRevisionsForEntity(device.getId());
+
+            if (!listNumber.isEmpty()) {
+                Button schoolBusHistoryButton = createSchoolBusHistoryButton(device);
+                return schoolBusHistoryButton;
+            } else {
+                return new Span("N/A");
+            }
+
+
+        })).setHeader("Last SIM Change");
     }
 
+    private Button createSchoolBusHistoryButton(SchoolBusImpl device){
+
+        Button schoolBusHistoryButton = new Button("Show school bus history", event -> {
+            List<Number> listNumber = schoolBusHistoryService.getRevisionsForEntity(device.getId());
+            openSchoolBusHistoryModal(device.getId(), listNumber);
+        });
+
+        schoolBusHistoryButton.getStyle().set("background", "none");
+        schoolBusHistoryButton.getStyle().set("border", "none");
+        schoolBusHistoryButton.getStyle().set("color", "blue");
+        schoolBusHistoryButton.getStyle().set("text-decoration", "underline");
+        schoolBusHistoryButton.getStyle().set("cursor", "pointer");
+
+        return schoolBusHistoryButton;
+    }
+
+    public void openSchoolBusHistoryModal(Integer busId, List<Number> revisions){
+
+        com.vaadin.flow.component.dialog.Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("School bus history");
+
+        Grid<SchoolBusImpl> historyGrid = new Grid<>(SchoolBusImpl.class);
+        historyGrid.setWidthFull();
+        historyGrid.removeAllColumns();
+
+        historyGrid.addColumn(SchoolBusImpl::getName).setHeader("Bus number").setAutoWidth(true);
+        historyGrid.addColumn(SchoolBusImpl::getBusType).setHeader("Bus type").setAutoWidth(true);
+        historyGrid.addColumn(SchoolBusImpl::getTerminal).setHeader("Terminal").setAutoWidth(true);
+        historyGrid.addColumn(SchoolBusImpl->SchoolBusImpl.getDashCam()).setHeader("Dash camera").setAutoWidth(true);
+        historyGrid.addColumn(SchoolBusImpl->SchoolBusImpl.getRadio()).setHeader("Radio").setAutoWidth(true);
+
+        List<SchoolBusImpl> busRevisions = schoolBusHistoryService.getEntitiesAtRevisions(busId, revisions);
+
+        historyGrid.setItems(busRevisions);
+
+        VerticalLayout content = new VerticalLayout(historyGrid);
+
+        content.setWidthFull();
+
+        dialog.add(content);
+
+        Button closeButton = new Button("Close",event->dialog.close());
+        dialog.getFooter().add(closeButton);
+
+        dialog.setWidth("80vw");
+
+        dialog.open();
+
+    }
 
     public void openAddBusDialog(){
         Dialog dialog = new Dialog();

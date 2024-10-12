@@ -37,6 +37,8 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	implementation 'com.vaadin:vaadin-spring-boot-starter:24.1.0'
+	implementation 'org.hibernate.orm:hibernate-envers:6.6.1.Final'
+
 	compileOnly 'org.projectlombok:lombok:1.18.34'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'

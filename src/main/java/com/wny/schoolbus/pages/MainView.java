@@ -15,11 +15,8 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.wny.schoolbus.entities.impl.DashCamImpl;
 import com.wny.schoolbus.entities.impl.RadioImpl;
-import com.wny.schoolbus.services.impl.BusServiceImpl;
-import com.wny.schoolbus.services.impl.DashCamServiceImpl;
+import com.wny.schoolbus.services.impl.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.wny.schoolbus.services.impl.RadioServiceImpl;
-import com.wny.schoolbus.services.impl.SimCardServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @org.springframework.stereotype.Component
@@ -31,13 +28,15 @@ public class MainView extends AppLayout {
     private DashCamServiceImpl dashCamService;
     private RadioServiceImpl radioService;
     private SimCardServiceImpl simCardService;
+    private SchoolBusHistoryServiceImpl schoolBusHistoryService;
 
     @Autowired
-    public MainView(BusServiceImpl busService,DashCamServiceImpl dashCamService, RadioServiceImpl radioService, SimCardServiceImpl simCardService) {
+    public MainView(BusServiceImpl busService,DashCamServiceImpl dashCamService, RadioServiceImpl radioService, SimCardServiceImpl simCardService,SchoolBusHistoryServiceImpl schoolBusHistoryService) {
         this.busService = busService;
         this.dashCamService = dashCamService;
         this.simCardService = simCardService;
         this.radioService   = radioService;
+        this.schoolBusHistoryService = schoolBusHistoryService;
 
         initHeader();
         initDrawer();
@@ -76,7 +75,7 @@ public class MainView extends AppLayout {
             contentArea.removeAll();
 
             if (selectedTab.equals(busesTab)) {
-                replaceContent(new BusListView(busService,dashCamService,radioService));
+                replaceContent(new BusListView(busService,dashCamService,radioService,schoolBusHistoryService));
             } else if (selectedTab.equals(dashCamTab)) {
                 replaceContent(new DeviceListView("dashcam",dashCamService,radioService,simCardService));
             } else if (selectedTab.equals(radioTab)) {
