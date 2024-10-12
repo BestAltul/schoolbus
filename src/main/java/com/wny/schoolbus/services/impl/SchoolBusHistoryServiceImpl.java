@@ -55,10 +55,8 @@ public class SchoolBusHistoryServiceImpl implements SchoolBusHistoryService {
                 Hibernate.initialize(entityAtRevision.getDashCam());
                 Hibernate.initialize(entityAtRevision.getRadio());
 
-                // Получаем дату ревизии
                 Date revisionDate = auditReader.getRevisionDate(revision);
 
-                // Создаем объект для хранения данных о ревизии и её дате
                 SchoolBusRevision schoolBusRevision = new SchoolBusRevision(entityAtRevision, revisionDate);
                 revisionEntities.add(schoolBusRevision);
             }
