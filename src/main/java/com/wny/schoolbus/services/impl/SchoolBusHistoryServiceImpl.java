@@ -2,6 +2,7 @@ package com.wny.schoolbus.services.impl;
 
 import com.wny.schoolbus.entities.impl.SchoolBusImpl;
 import com.wny.schoolbus.services.SchoolBusHistoryService;
+import com.wny.schoolbus.utils.SchoolBusRevision;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
@@ -43,6 +44,28 @@ public class SchoolBusHistoryServiceImpl implements SchoolBusHistoryService {
         return revisionEntities;
     }
 
+    @Transactional(readOnly = true)
+    public List<SchoolBusRevision> getEntitiesAtRevisionsWithDate(Integer entityId, List<Number> revisions) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        List<SchoolBusRevision> revisionEntities = new ArrayList<>();
+
+        for (Number revision : revisions) {
+            SchoolBusImpl entityAtRevision = auditReader.find(SchoolBusImpl.class, entityId, revision);
+            if (entityAtRevision != null) {
+                Hibernate.initialize(entityAtRevision.getDashCam());
+                Hibernate.initialize(entityAtRevision.getRadio());
+
+                // Получаем дату ревизии
+                Date revisionDate = auditReader.getRevisionDate(revision);
+
+                // Создаем объект для хранения данных о ревизии и её дате
+                SchoolBusRevision schoolBusRevision = new SchoolBusRevision(entityAtRevision, revisionDate);
+                revisionEntities.add(schoolBusRevision);
+            }
+        }
+
+        return revisionEntities;
+    }
 
     public Map<String,Boolean> getChangedFields(Integer entityId, Number revision){
         AuditReader auditReader = AuditReaderFactory.get(entityManager);

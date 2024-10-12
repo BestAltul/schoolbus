@@ -35,6 +35,7 @@ import com.wny.schoolbus.services.impl.BusServiceImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 import com.wny.schoolbus.services.impl.RadioServiceImpl;
 import com.wny.schoolbus.services.impl.SchoolBusHistoryServiceImpl;
+import com.wny.schoolbus.utils.SchoolBusRevision;
 
 import java.util.List;
 import java.util.Map;
@@ -141,39 +142,46 @@ public class BusListView extends VerticalLayout {
         return schoolBusHistoryButton;
     }
 
-    public void openSchoolBusHistoryModal(Integer busId, List<Number> revisions){
+    private void openSchoolBusHistoryModal(Integer busId, List<Number> revisions) {
 
         com.vaadin.flow.component.dialog.Dialog dialog = new Dialog();
         dialog.setHeaderTitle("School bus history");
 
-        Grid<SchoolBusImpl> historyGrid = new Grid<>(SchoolBusImpl.class);
+        Grid<SchoolBusRevision> historyGrid = new Grid<>(SchoolBusRevision.class);
         historyGrid.setWidthFull();
         historyGrid.removeAllColumns();
 
-        historyGrid.addColumn(SchoolBusImpl::getName).setHeader("Bus number").setAutoWidth(true);
-        historyGrid.addColumn(SchoolBusImpl::getBusType).setHeader("Bus type").setAutoWidth(true);
-        historyGrid.addColumn(SchoolBusImpl::getTerminal).setHeader("Terminal").setAutoWidth(true);
-        historyGrid.addColumn(SchoolBusImpl->SchoolBusImpl.getDashCam()).setHeader("Dash camera").setAutoWidth(true);
-        historyGrid.addColumn(SchoolBusImpl->SchoolBusImpl.getRadio()).setHeader("Radio").setAutoWidth(true);
+        historyGrid.addColumn(revision -> revision.getSchoolBus().getName()).setHeader("Bus number").setAutoWidth(true);
+        historyGrid.addColumn(revision -> revision.getSchoolBus().getBusType()).setHeader("Bus type").setAutoWidth(true);
+        historyGrid.addColumn(revision -> revision.getSchoolBus().getTerminal()).setHeader("Terminal").setAutoWidth(true);
 
-        List<SchoolBusImpl> busRevisions = schoolBusHistoryService.getEntitiesAtRevisions(busId, revisions);
+        historyGrid.addColumn(revision -> {
+            DashCamImpl dashCam = revision.getSchoolBus().getDashCam();
+            return dashCam != null ? dashCam.getName() : "No DashCam";
+        }).setHeader("Dash Camera").setAutoWidth(true);
+
+        historyGrid.addColumn(revision -> {
+            RadioImpl radio = revision.getSchoolBus().getRadio();
+            return radio != null ? radio.getName() : "No Radio";
+        }).setHeader("Radio").setAutoWidth(true);
+
+        historyGrid.addColumn(revision -> revision.getRevisionDate().toString()).setHeader("Date of Change").setAutoWidth(true);
+
+        List<SchoolBusRevision> busRevisions = schoolBusHistoryService.getEntitiesAtRevisionsWithDate(busId, revisions);
 
         historyGrid.setItems(busRevisions);
 
         VerticalLayout content = new VerticalLayout(historyGrid);
-
         content.setWidthFull();
-
         dialog.add(content);
 
-        Button closeButton = new Button("Close",event->dialog.close());
+        Button closeButton = new Button("Close", event -> dialog.close());
         dialog.getFooter().add(closeButton);
 
         dialog.setWidth("80vw");
-
         dialog.open();
-
     }
+
 
     public void openAddBusDialog(){
         Dialog dialog = new Dialog();
