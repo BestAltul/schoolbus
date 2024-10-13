@@ -38,6 +38,7 @@ dependencies {
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	implementation 'com.vaadin:vaadin-spring-boot-starter:24.1.0'
 	implementation 'org.hibernate.orm:hibernate-envers:6.6.1.Final'
+	implementation 'org.modelmapper:modelmapper:3.2.1'
 
 	compileOnly 'org.projectlombok:lombok:1.18.34'
 	runtimeOnly 'org.postgresql:postgresql'

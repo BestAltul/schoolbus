@@ -3,8 +3,16 @@ package com.wny.schoolbus.entities.impl;
 import com.wny.schoolbus.entities.Employee;
 import com.wny.schoolbus.enums.EmployeeStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Table(name="employee")
 public class EmployeeImpl implements Employee {
 
@@ -18,8 +26,5 @@ public class EmployeeImpl implements Employee {
 
     @Enumerated
     private EmployeeStatus employeeStatus;
-
-
-
 
 }
