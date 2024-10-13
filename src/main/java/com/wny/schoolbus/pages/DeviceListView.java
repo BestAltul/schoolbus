@@ -5,7 +5,6 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,16 +15,15 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import com.wny.schoolbus.entities.Device;
-import com.wny.schoolbus.entities.impl.DashCamImpl;
-import com.wny.schoolbus.entities.impl.RadioImpl;
-import com.wny.schoolbus.entities.impl.SimCardHistoryImpl;
-import com.wny.schoolbus.entities.impl.SimCardImpl;
+import com.wny.schoolbus.entities.impl.DashCam;
+import com.wny.schoolbus.entities.impl.Radio;
+import com.wny.schoolbus.entities.SimCardHistory;
+import com.wny.schoolbus.entities.SimCard;
 import com.wny.schoolbus.factory.impl.DashCamFactoryImpl;
 import com.wny.schoolbus.factory.impl.RadioFactoryImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 import com.wny.schoolbus.services.impl.RadioServiceImpl;
 import com.wny.schoolbus.services.impl.SimCardServiceImpl;
-import lombok.Data;
 import com.vaadin.flow.component.button.Button;
 
 import java.time.LocalDate;
@@ -118,9 +116,9 @@ public class DeviceListView extends VerticalLayout {
         grid.addColumn(Device::getName).setHeader("Name");
 
         grid.addColumn(device->{
-            if(device instanceof DashCamImpl) {
-                return ((DashCamImpl) device).getDRID();
-            } else if (device instanceof RadioImpl) {
+            if(device instanceof DashCam) {
+                return ((DashCam) device).getDRID();
+            } else if (device instanceof Radio) {
                 return "N/A";
             }else{
                 return "";
@@ -128,13 +126,13 @@ public class DeviceListView extends VerticalLayout {
         }).setHeader("DRID");
 
         grid.addColumn(device -> {
-            SimCardImpl simCard = device.getSimCard();
+            SimCard simCard = device.getSimCard();
             return (simCard != null) ? simCard.getSimCardNumber() : "No SIM card";
         }).setHeader("SIM Card Number");
 
 
         grid.addColumn(new ComponentRenderer<>(device -> {
-            SimCardHistoryImpl lastHistory = simCardService.getLastSimCardHistory(device.getSimCard());
+            SimCardHistory lastHistory = simCardService.getLastSimCardHistory(device.getSimCard());
 
             if (lastHistory != null) {
                 Button simCardHistoryButton = createSimCardHistoryButton(device);
@@ -155,7 +153,7 @@ public class DeviceListView extends VerticalLayout {
 
         Button simCardHistoryButton = new Button("Show sim card history", event -> {
             Integer simCardId = device.getSimCard().getId();
-            List<SimCardHistoryImpl> history = simCardService.getSimCardHistoryByDashCamId(device.getId());
+            List<SimCardHistory> history = simCardService.getSimCardHistoryByDashCamId(device.getId());
             openSimCardHistoryModal(history);
         });
 
@@ -168,17 +166,17 @@ public class DeviceListView extends VerticalLayout {
         return simCardHistoryButton;
     }
 
-    public void openSimCardHistoryModal(List<SimCardHistoryImpl> history){
+    public void openSimCardHistoryModal(List<SimCardHistory> history){
 
         com.vaadin.flow.component.dialog.Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Sim card history");
 
-        Grid<SimCardHistoryImpl> historyGrid = new Grid<>(SimCardHistoryImpl.class);
+        Grid<SimCardHistory> historyGrid = new Grid<>(SimCardHistory.class);
         historyGrid.setWidthFull();
         historyGrid.removeAllColumns();
 
-        historyGrid.addColumn(SimCardHistoryImpl::getStartDate).setHeader("Start date").setAutoWidth(true);
-        historyGrid.addColumn(SimCardHistoryImpl::getEndDate).setHeader("End date").setAutoWidth(true);
+        historyGrid.addColumn(SimCardHistory::getStartDate).setHeader("Start date").setAutoWidth(true);
+        historyGrid.addColumn(SimCardHistory::getEndDate).setHeader("End date").setAutoWidth(true);
         historyGrid.addColumn(historySim->historySim.getSimCard().getSimCardNumber()).setHeader("Sim card number").setAutoWidth(true);
         historyGrid.addColumn(historySim->historySim.getSimCard().getSimCardType()).setHeader("Type").setAutoWidth(true);
 
@@ -208,18 +206,18 @@ public class DeviceListView extends VerticalLayout {
 
         com.vaadin.flow.component.textfield.TextField nameField = new com.vaadin.flow.component.textfield.TextField("Name", device.getName());
         com.vaadin.flow.component.textfield.TextField dridField = null;
-        if(device instanceof DashCamImpl){
-            dridField = new com.vaadin.flow.component.textfield.TextField("DRID", ((DashCamImpl)device).getDRID());
+        if(device instanceof DashCam){
+            dridField = new com.vaadin.flow.component.textfield.TextField("DRID", ((DashCam)device).getDRID());
             binder.forField(dridField)
                     .asRequired("DRID is required")
-                    .bind(dev->((DashCamImpl)dev).getDRID(),
-                            (dev,drid)->((DashCamImpl)dev).setDRID(drid));
+                    .bind(dev->((DashCam)dev).getDRID(),
+                            (dev,drid)->((DashCam)dev).setDRID(drid));
         }
         com.vaadin.flow.component.textfield.TextField imeiField = new TextField("IMEI", device.getIMEI());
-        ComboBox<SimCardImpl> simCardComboBox = new ComboBox<>("SIM Card");
-        List<SimCardImpl> simCards = simCardService.getAllSimCards();
+        ComboBox<SimCard> simCardComboBox = new ComboBox<>("SIM Card");
+        List<SimCard> simCards = simCardService.getAllSimCards();
         simCardComboBox.setItems(simCards);
-        simCardComboBox.setItemLabelGenerator(SimCardImpl::getSimCardNumber);
+        simCardComboBox.setItemLabelGenerator(SimCard::getSimCardNumber);
         simCardComboBox.setValue(device.getSimCard());
 
         binder.forField(nameField)
@@ -235,13 +233,13 @@ public class DeviceListView extends VerticalLayout {
         Button saveButton = new Button("Save", event -> {
             if (binder.validate().isOk()) {
 
-                SimCardImpl selectedSimCard = simCardComboBox.getValue();
+                SimCard selectedSimCard = simCardComboBox.getValue();
                 System.out.println("Selected SIM card: " + selectedSimCard);
                 System.out.println("Current DashCam SIM card: " + device.getSimCard());
                 if (!selectedSimCard.equals(device.getSimCard())) {
                     simCardService.closePreviousSimCardHistory(device);
 
-                    SimCardHistoryImpl newHistory = new SimCardHistoryImpl();
+                    SimCardHistory newHistory = new SimCardHistory();
                     newHistory.setDevice(device);
                     newHistory.setSimCard(selectedSimCard);
                     newHistory.setStartDate(LocalDate.now());
@@ -250,10 +248,10 @@ public class DeviceListView extends VerticalLayout {
                     Notification.show("Sim card date changed!");
                     device.setSimCard(selectedSimCard);
                 }
-                if(device instanceof DashCamImpl){
-                    dashCamService.save((DashCamImpl) device);
-                }else if(device instanceof RadioImpl){
-                    radioService.save((RadioImpl) device);
+                if(device instanceof DashCam){
+                    dashCamService.save((DashCam) device);
+                }else if(device instanceof Radio){
+                    radioService.save((Radio) device);
                 }
 
                 dataProvider.refreshAll();
@@ -286,27 +284,27 @@ public class DeviceListView extends VerticalLayout {
         TextField dridField = new TextField("DRID");
         TextField imeiField = new TextField("IMEI");
 
-        ComboBox<SimCardImpl> simCardComboBox = new ComboBox<>("SIM Card");
-        List<SimCardImpl> simCards = simCardService.getAllSimCards();
+        ComboBox<SimCard> simCardComboBox = new ComboBox<>("SIM Card");
+        List<SimCard> simCards = simCardService.getAllSimCards();
         simCardComboBox.setItems(simCards);
-        simCardComboBox.setItemLabelGenerator(SimCardImpl::getSimCardNumber);
+        simCardComboBox.setItemLabelGenerator(SimCard::getSimCardNumber);
         simCardComboBox.setPlaceholder("Select SIM card");
 
         Button saveButton = new Button("Save", event -> {
             String name = nameField.getValue();
             String drid = dridField.getValue();
             String imei = imeiField.getValue();
-            SimCardImpl simCard = simCardComboBox.getValue();
+            SimCard simCard = simCardComboBox.getValue();
 
             if (!name.isEmpty() && !drid.isEmpty()) {
                 if(deviceType.equals("dashcam")){
                     DashCamFactoryImpl dashCamFactory = new DashCamFactoryImpl();
-                    DashCamImpl newDashCam = dashCamFactory.createDevice(name,drid,imei,simCard);
+                    DashCam newDashCam = dashCamFactory.createDevice(name,drid,imei,simCard);
                     dashCamService.save(newDashCam);
                     dataProvider.getItems().add(newDashCam);
                 }else if(deviceType.equals("radio")){
                     RadioFactoryImpl radioFactory = new RadioFactoryImpl();
-                    RadioImpl newRadio = radioFactory.createDevice(name,drid,imei,simCard);
+                    Radio newRadio = radioFactory.createDevice(name,drid,imei,simCard);
                     radioService.save(newRadio);
                     dataProvider.getItems().add(newRadio);
                 }

@@ -1,28 +1,28 @@
 package com.wny.schoolbus.entities.impl;
 
 import com.wny.schoolbus.entities.Device;
+import com.wny.schoolbus.entities.SimCard;
+import com.wny.schoolbus.entities.SimCardHistory;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class DashCamImpl extends Device{
+public class DashCam extends Device{
 
     private String DRID;
 
     @OneToMany(mappedBy = "device")
-    private List<SimCardHistoryImpl> simCardHistory;
+    private List<SimCardHistory> simCardHistory;
 
-    public DashCamImpl() {
+    public DashCam() {
         super();
     }
 
-    public DashCamImpl(String name, String drid, String imei, SimCardImpl simCard) {
+    public DashCam(String name, String drid, String imei, SimCard simCard) {
         super(name);
         this.DRID = drid;
         this.IMEI = imei;

@@ -2,23 +2,21 @@ package com.wny.schoolbus.repositories;
 
 import com.wny.schoolbus.entities.Device;
 import com.wny.schoolbus.entities.SimCardHistory;
-import com.wny.schoolbus.entities.impl.DashCamImpl;
-import com.wny.schoolbus.entities.impl.SimCardHistoryImpl;
-import com.wny.schoolbus.entities.impl.SimCardImpl;
+import com.wny.schoolbus.entities.SimCard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface SimCardHistoryRepository extends JpaRepository<SimCardHistoryImpl,Integer> {
-    SimCardHistoryImpl findByDeviceAndEndDateIsNull(Device device);
+public interface SimCardHistoryRepository extends JpaRepository<SimCardHistory,Integer> {
+    SimCardHistory findByDeviceAndEndDateIsNull(Device device);
 
-    SimCardHistoryImpl findTopBySimCardOrderByStartDateDesc(SimCardImpl simCard);
+    SimCardHistory findTopBySimCardOrderByStartDateDesc(SimCard simCard);
 
-    List<SimCardHistoryImpl> getSimCardHistoryBySimCardId(Integer simCardId);
+    List<SimCardHistory> getSimCardHistoryBySimCardId(Integer simCardId);
 
-    List<SimCardHistoryImpl> getSimCardHistoryByDeviceId(Integer simCardId);
+    List<SimCardHistory> getSimCardHistoryByDeviceId(Integer simCardId);
 
 
 }

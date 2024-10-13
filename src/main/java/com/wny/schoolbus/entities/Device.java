@@ -1,7 +1,6 @@
 package com.wny.schoolbus.entities;
 
 import com.wny.schoolbus.entities.impl.SchoolBusImpl;
-import com.wny.schoolbus.entities.impl.SimCardImpl;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +19,7 @@ public abstract class Device {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sim_card_id")
-    protected SimCardImpl simCard;
+    protected SimCard simCard;
 
     public abstract SchoolBusImpl getSchoolBus();
 

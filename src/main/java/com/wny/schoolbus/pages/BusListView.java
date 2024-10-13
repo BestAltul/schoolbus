@@ -3,7 +3,6 @@ package com.wny.schoolbus.pages;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -15,13 +14,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.Theme;
 import com.wny.schoolbus.annotations.DisplayName;
-import com.wny.schoolbus.entities.Device;
-import com.wny.schoolbus.entities.Vehicle;
-import com.wny.schoolbus.entities.impl.DashCamImpl;
-import com.wny.schoolbus.entities.impl.RadioImpl;
-import com.wny.schoolbus.entities.impl.SimCardHistoryImpl;
+import com.wny.schoolbus.entities.impl.DashCam;
+import com.wny.schoolbus.entities.impl.Radio;
 import com.wny.schoolbus.enums.BusType;
 import com.wny.schoolbus.enums.Terminal;
 import com.vaadin.flow.data.binder.Binder;
@@ -38,8 +33,6 @@ import com.wny.schoolbus.services.impl.SchoolBusHistoryServiceImpl;
 import com.wny.schoolbus.utils.SchoolBusRevision;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @Route("bus-list")
 public class BusListView extends VerticalLayout {
@@ -156,12 +149,12 @@ public class BusListView extends VerticalLayout {
         historyGrid.addColumn(revision -> revision.getSchoolBus().getTerminal()).setHeader("Terminal").setAutoWidth(true);
 
         historyGrid.addColumn(revision -> {
-            DashCamImpl dashCam = revision.getSchoolBus().getDashCam();
+            DashCam dashCam = revision.getSchoolBus().getDashCam();
             return dashCam != null ? dashCam.getName() : "No DashCam";
         }).setHeader("Dash Camera").setAutoWidth(true);
 
         historyGrid.addColumn(revision -> {
-            RadioImpl radio = revision.getSchoolBus().getRadio();
+            Radio radio = revision.getSchoolBus().getRadio();
             return radio != null ? radio.getName() : "No Radio";
         }).setHeader("Radio").setAutoWidth(true);
 
@@ -199,24 +192,24 @@ public class BusListView extends VerticalLayout {
         terminalField.setItemLabelGenerator(Terminal::getDescription);
         terminalField.setPlaceholder("Select terminal");
 
-        ComboBox<DashCamImpl> dashCamComboBox = new ComboBox<>("Dash camera");
-        List<DashCamImpl> dashCamList = dashCamService.getAllDashCameras();
+        ComboBox<DashCam> dashCamComboBox = new ComboBox<>("Dash camera");
+        List<DashCam> dashCamList = dashCamService.getAllDashCameras();
         dashCamComboBox.setItems(dashCamList);
-        dashCamComboBox.setItemLabelGenerator(DashCamImpl::getName);
+        dashCamComboBox.setItemLabelGenerator(DashCam::getName);
         dashCamComboBox.setPlaceholder("Select dash camera");
 
-        ComboBox<RadioImpl> radioComboBox = new ComboBox<>("Radio");
-        List<RadioImpl> radioList = radioService.getAllRadios();
+        ComboBox<Radio> radioComboBox = new ComboBox<>("Radio");
+        List<Radio> radioList = radioService.getAllRadios();
         radioComboBox.setItems(radioList);
-        radioComboBox.setItemLabelGenerator(RadioImpl::getDescription);
+        radioComboBox.setItemLabelGenerator(Radio::getDescription);
         radioComboBox.setPlaceholder("Select radio");
 
         Button saveButton = new Button("Save", event->{
             String name = nameField.getValue();
             BusType type = typeField.getValue();
             Terminal terminal = terminalField.getValue();
-            RadioImpl radio = radioComboBox.getValue();
-            DashCamImpl dashCam = dashCamComboBox.getValue();
+            Radio radio = radioComboBox.getValue();
+            DashCam dashCam = dashCamComboBox.getValue();
 
                 if (!name.isEmpty()) {
                     //SchoolBusImpl newBus = new SchoolBusImpl(name,type,terminal,dashCam,radio);
@@ -258,11 +251,11 @@ public class BusListView extends VerticalLayout {
         terminalField.setItems(Terminal.values());
         terminalField.setValue(bus.getTerminal());
 
-        ComboBox<DashCamImpl> dashCameralField = new ComboBox<>("Dash camera");
+        ComboBox<DashCam> dashCameralField = new ComboBox<>("Dash camera");
         dashCameralField.setItems(dashCamService.getAllDashCameras());
         dashCameralField.setValue(bus.getDashCam());
 
-        ComboBox<RadioImpl> radioField = new ComboBox<>("Camera");
+        ComboBox<Radio> radioField = new ComboBox<>("Camera");
         radioField.setItems(radioService.getAllRadios());
         radioField.setValue(bus.getRadio());
 

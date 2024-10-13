@@ -3,7 +3,6 @@ package com.wny.schoolbus.pages;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -13,8 +12,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
-import com.wny.schoolbus.entities.impl.SchoolBusImpl;
-import com.wny.schoolbus.entities.impl.SimCardImpl;
+import com.wny.schoolbus.entities.SimCard;
 import com.wny.schoolbus.enums.SimCardCarrier;
 import com.wny.schoolbus.enums.SimCardType;
 import com.wny.schoolbus.services.impl.SimCardServiceImpl;
@@ -26,8 +24,8 @@ import java.util.List;
 public class SimCardListView extends VerticalLayout {
 
     private final SimCardServiceImpl simCardService;
-    private final Grid<SimCardImpl> grid = new Grid<>(SimCardImpl.class);
-    private ListDataProvider<SimCardImpl> dataProvider;
+    private final Grid<SimCard> grid = new Grid<>(SimCard.class);
+    private ListDataProvider<SimCard> dataProvider;
     private final Button addSimCardButton = new Button("Add a new SIM card");
     private final Button backButton = new Button("Back");
     private final TextField filterText = new TextField();
@@ -35,16 +33,16 @@ public class SimCardListView extends VerticalLayout {
     public SimCardListView(SimCardServiceImpl simCardService) {
         this.simCardService = simCardService;
 
-        List<SimCardImpl> simCards = simCardService.getAllSimCards();
+        List<SimCard> simCards = simCardService.getAllSimCards();
         dataProvider = new ListDataProvider<>(simCards);
         grid.setDataProvider(dataProvider);
 
         grid.removeAllColumns();
 
-        grid.addColumn(SimCardImpl::getId).setHeader("ID");
-        grid.addColumn(SimCardImpl::getSimCardNumber).setHeader("SIM Card Number");
-        grid.addColumn(SimCardImpl::getSimCardType).setHeader("SIM Card Type");
-        grid.addColumn(SimCardImpl::getSimCardCarrier).setHeader("Carrier");
+        grid.addColumn(SimCard::getId).setHeader("ID");
+        grid.addColumn(SimCard::getSimCardNumber).setHeader("SIM Card Number");
+        grid.addColumn(SimCard::getSimCardType).setHeader("SIM Card Type");
+        grid.addColumn(SimCard::getSimCardCarrier).setHeader("Carrier");
 
 
         backButton.addClickListener(event -> UI.getCurrent().getPage().getHistory().back());
@@ -87,7 +85,7 @@ public class SimCardListView extends VerticalLayout {
             SimCardCarrier simCardCarrier = simCardCarrierField.getValue();
 
             if (!simCardNumber.isEmpty() && simCardType != null && simCardCarrier != null) {
-                SimCardImpl newSimCard = new SimCardImpl( simCardType, simCardCarrier, simCardNumber);
+                SimCard newSimCard = new SimCard( simCardType, simCardCarrier, simCardNumber);
                 simCardService.save(newSimCard);
 
                 dataProvider.getItems().add(newSimCard);
@@ -108,10 +106,10 @@ public class SimCardListView extends VerticalLayout {
         dialog.open();
     }
 
-    private void openEditSimCardDialog(SimCardImpl simCard){
+    private void openEditSimCardDialog(SimCard simCard){
         Dialog dialog = new Dialog();
 
-        Binder<SimCardImpl> binder = new Binder<>(SimCardImpl.class);
+        Binder<SimCard> binder = new Binder<>(SimCard.class);
 
         FormLayout formLayout = new FormLayout();
         TextField simCardNumberField = new TextField("Sim card number",simCard.getSimCardNumber());
@@ -126,13 +124,13 @@ public class SimCardListView extends VerticalLayout {
 
         binder.forField(simCardNumberField)
                 .asRequired("Sim card number is required")
-                .bind(SimCardImpl::getSimCardNumber,SimCardImpl::setSimCardNumber);
+                .bind(SimCard::getSimCardNumber, SimCard::setSimCardNumber);
         binder.forField(simCardTypeComboBox)
                 .asRequired("Sim card type is required")
-                .bind(SimCardImpl::getSimCardType,SimCardImpl::setSimCardType);
+                .bind(SimCard::getSimCardType, SimCard::setSimCardType);
         binder.forField(simCardCarrierComboBox)
                 .asRequired("Sim card carrier is required")
-                .bind(SimCardImpl::getSimCardCarrier,SimCardImpl::setSimCardCarrier);
+                .bind(SimCard::getSimCardCarrier, SimCard::setSimCardCarrier);
 
         binder.setBean(simCard);
 

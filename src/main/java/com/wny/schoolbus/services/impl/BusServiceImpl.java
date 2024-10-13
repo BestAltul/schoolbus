@@ -1,6 +1,6 @@
 package com.wny.schoolbus.services.impl;
 
-import com.wny.schoolbus.entities.impl.RadioImpl;
+import com.wny.schoolbus.entities.impl.Radio;
 import com.wny.schoolbus.entities.impl.SchoolBusImpl;
 import com.wny.schoolbus.repositories.BusRepository;
 import com.wny.schoolbus.services.BusService;
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import com.wny.schoolbus.entities.impl.DashCamImpl;
+import com.wny.schoolbus.entities.impl.DashCam;
 
 import java.util.List;
 
@@ -33,14 +33,14 @@ public class BusServiceImpl implements BusService {
     public void save(SchoolBusImpl bus) {
 
         if (bus.getId() == null) {
-            DashCamImpl dashCam = entityManager.find(DashCamImpl.class, bus.getDashCam().getId());
-            RadioImpl radio = entityManager.find(RadioImpl.class,bus.getRadio().getId());
+            DashCam dashCam = entityManager.find(DashCam.class, bus.getDashCam().getId());
+            Radio radio = entityManager.find(Radio.class,bus.getRadio().getId());
             bus.setDashCam(dashCam);
             bus.setRadio(radio);
             entityManager.persist(bus);
         } else {
-            DashCamImpl dashCam = entityManager.find(DashCamImpl.class, bus.getDashCam().getId());
-            RadioImpl radio = entityManager.find(RadioImpl.class,bus.getRadio().getId());
+            DashCam dashCam = entityManager.find(DashCam.class, bus.getDashCam().getId());
+            Radio radio = entityManager.find(Radio.class,bus.getRadio().getId());
             bus.setRadio(radio);
             bus.setDashCam(dashCam);
             bus = entityManager.merge(bus);

@@ -1,9 +1,9 @@
 package com.wny.schoolbus.services;
 
-import com.wny.schoolbus.entities.impl.SimCardImpl;
+import com.wny.schoolbus.entities.SimCard;
 
 import java.util.List;
 
 public interface SimCardService {
-    List<SimCardImpl> getAllSimCards();
+    List<SimCard> getAllSimCards();
 }

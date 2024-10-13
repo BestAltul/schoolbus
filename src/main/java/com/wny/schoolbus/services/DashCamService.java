@@ -1,10 +1,9 @@
 package com.wny.schoolbus.services;
 
-import com.wny.schoolbus.entities.Device;
-import com.wny.schoolbus.entities.impl.DashCamImpl;
+import com.wny.schoolbus.entities.impl.DashCam;
 
 import java.util.List;
 
 public interface DashCamService {
-    public List<DashCamImpl> getAllDashCameras();
+    public List<DashCam> getAllDashCameras();
 }

@@ -1,11 +1,9 @@
 package com.wny.schoolbus.controllers;
 
 import com.wny.schoolbus.dtos.EmployeeDTO;
-import com.wny.schoolbus.entities.impl.EmployeeImpl;
-import com.wny.schoolbus.services.EmployeeService;
+import com.wny.schoolbus.entities.Employee;
 import com.wny.schoolbus.services.impl.EmployeeServiceImpl;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,19 +15,19 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/employees")
+@RequestMapping("/api/v3/employee-management")
 public class EmployeeController {
 
     private EmployeeServiceImpl employeeService;
     private ModelMapper modelMapper;
 
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<EmployeeDTO> addEmployee(@RequestBody EmployeeDTO employeeDTO){
 
-        EmployeeImpl employee = modelMapper.map(employeeDTO,EmployeeImpl.class);
+        Employee employee = modelMapper.map(employeeDTO, Employee.class);
 
-        EmployeeImpl savedEmployee = employeeService.addEmployee(employee);
+        Employee savedEmployee = employeeService.addEmployee(employee);
 
         EmployeeDTO savedEmployeeDTO = modelMapper.map(savedEmployee, EmployeeDTO.class);
 
@@ -40,7 +38,7 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public ResponseEntity getEmployeeById(@PathVariable String id){
 
-        Optional<EmployeeImpl> employeeOptional = employeeService.getEmployee(id);
+        Optional<Employee> employeeOptional = employeeService.getEmployee(id);
 
         if(employeeOptional.isPresent()){
             EmployeeDTO employeeDTO = modelMapper.map(employeeOptional.get(), EmployeeDTO.class);
@@ -53,21 +51,21 @@ public class EmployeeController {
     @GetMapping("/all")
     public ResponseEntity<List<EmployeeDTO>> getAllEmployees(){
 
-        List<EmployeeImpl> employeeList = employeeService.getAllEmployees();
+        List<Employee> employeeList = employeeService.getAllEmployees();
         List<EmployeeDTO> employeeDTOList = employeeList.stream().map(employee -> modelMapper.map(employee, EmployeeDTO.class))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(employeeDTOList);
 
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable String id, @RequestBody EmployeeDTO employeeDTO){
 
-        Optional<EmployeeImpl> employeeOptional = employeeService.getEmployee(id);
+        Optional<Employee> employeeOptional = employeeService.getEmployee(id);
 
         if(employeeOptional.isPresent()){
 
-            EmployeeImpl updatedEmployee = employeeService.updateEmployee(employeeOptional.get(),employeeDTO);
+            Employee updatedEmployee = employeeService.updateEmployee(employeeOptional.get(),employeeDTO);
 
             EmployeeDTO updatedEmployeeDTO = modelMapper.map(updatedEmployee, EmployeeDTO.class);
 
@@ -77,7 +75,7 @@ public class EmployeeController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable String id){
 
         return employeeService.deleteEmployee(id);

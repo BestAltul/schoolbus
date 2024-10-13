@@ -1,7 +1,6 @@
 package com.wny.schoolbus.services.impl;
 
-import com.wny.schoolbus.entities.Device;
-import com.wny.schoolbus.entities.impl.DashCamImpl;
+import com.wny.schoolbus.entities.impl.DashCam;
 import com.wny.schoolbus.repositories.DashCamRepository;
 import com.wny.schoolbus.services.DashCamService;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +13,11 @@ import java.util.List;
 public class DashCamServiceImpl implements DashCamService {
     private final DashCamRepository dashCamRepository;
 
-    public List<DashCamImpl> getAllDashCameras(){
+    public List<DashCam> getAllDashCameras(){
        return dashCamRepository.findAll();
     }
 
-    public void save(DashCamImpl dashCam){
+    public void save(DashCam dashCam){
         dashCamRepository.save(dashCam);
     }
 }

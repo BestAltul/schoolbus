@@ -1,7 +1,6 @@
 package com.wny.schoolbus.entities.impl;
 
 import com.wny.schoolbus.annotations.DisplayName;
-import com.wny.schoolbus.entities.Device;
 import com.wny.schoolbus.entities.Vehicle;
 import com.wny.schoolbus.enums.BusType;
 import com.wny.schoolbus.enums.Terminal;
@@ -9,7 +8,6 @@ import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 
@@ -44,14 +42,14 @@ public class SchoolBusImpl implements Vehicle {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="dashcam_id",referencedColumnName = "id")
     @DisplayName("Dash camera")
-    private DashCamImpl dashCam;
+    private DashCam dashCam;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="radio_id",referencedColumnName = "id")
     @DisplayName("Radio")
-    private RadioImpl radio;
+    private Radio radio;
 
-    public SchoolBusImpl(String name,BusType type, Terminal terminal,DashCamImpl dashCam, RadioImpl radio){
+    public SchoolBusImpl(String name, BusType type, Terminal terminal, DashCam dashCam, Radio radio){
         this.name = name;
         this.busType = type;
         this.dashCam = dashCam;

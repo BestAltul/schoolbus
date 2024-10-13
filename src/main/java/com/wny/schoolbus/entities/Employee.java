@@ -1,4 +1,29 @@
 package com.wny.schoolbus.entities;
 
-public interface Employee {
+import com.wny.schoolbus.enums.EmployeeStatus;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Table(name="employee")
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
+
+    @Enumerated
+    private EmployeeStatus employeeStatus;
+
 }

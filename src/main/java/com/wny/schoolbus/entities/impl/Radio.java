@@ -1,27 +1,28 @@
 package com.wny.schoolbus.entities.impl;
 
 import com.wny.schoolbus.entities.Device;
+import com.wny.schoolbus.entities.SimCard;
+import com.wny.schoolbus.entities.SimCardHistory;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.envers.Audited;
 
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
-public class RadioImpl extends Device {
+public class Radio extends Device {
 
     @OneToMany(mappedBy = "device")
-    private List<SimCardHistoryImpl> simCardHistory;
+    private List<SimCardHistory> simCardHistory;
 
 
-    public RadioImpl(String name, String imei, SimCardImpl simCard) {
+    public Radio(String name, String imei, SimCard simCard) {
         super(name);
         this.IMEI = imei;
         this.simCard = simCard;
     }
-    public RadioImpl() {
+    public Radio() {
         super();
     }
 

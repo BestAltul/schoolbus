@@ -1,10 +1,9 @@
 package com.wny.schoolbus.services.impl;
 
 import com.wny.schoolbus.dtos.EmployeeDTO;
-import com.wny.schoolbus.entities.impl.EmployeeImpl;
+import com.wny.schoolbus.entities.Employee;
 import com.wny.schoolbus.repositories.EmployeeRepository;
 import com.wny.schoolbus.services.EmployeeService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,23 +20,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private ModelMapper modelMapper;
 
-    public EmployeeImpl addEmployee(EmployeeImpl employee){
+    public Employee addEmployee(Employee employee){
         return employeeRepository.save(employee);
     }
 
-    public Optional<EmployeeImpl> getEmployee(String id){
+    public Optional<Employee> getEmployee(String id){
         return employeeRepository.findById(id);
     }
 
-    public List<EmployeeImpl> getAllEmployees(){
-        return employeeRepository.getAllEmployees();
+    public List<Employee> getAllEmployees(){
+        return employeeRepository.findAll();
     }
 
-    public EmployeeImpl updateEmployee(EmployeeImpl employee, EmployeeDTO employeeDTO) {
+    public Employee updateEmployee(Employee employee, EmployeeDTO employeeDTO) {
 
         modelMapper.map(employeeDTO, employee);
 
-        EmployeeImpl updatedEmployee = employeeRepository.save(employee);
+        Employee updatedEmployee = employeeRepository.save(employee);
 
         return updatedEmployee;
 
@@ -45,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public ResponseEntity<Void> deleteEmployee(String id){
 
-        Optional<EmployeeImpl> employeeOpt = employeeRepository.findById(id);
+        Optional<Employee> employeeOpt = employeeRepository.findById(id);
 
         if (employeeOpt.isPresent()) {
             employeeRepository.deleteById(id);
