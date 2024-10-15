@@ -2,11 +2,9 @@ package com.wny.schoolbus.entities;
 
 import com.wny.schoolbus.enums.EmployeeStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
