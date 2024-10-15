@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.times;
@@ -70,6 +71,35 @@ class EmployeeServiceImplTest {
 
     @Test
     void getAllEmployees() {
+        Employee employee1 = Employee.builder()
+                .firstName("Paul")
+                .lastName("McCartney")
+                .phoneNumber("7169999999")
+                .employeeStatus(EmployeeStatus.WORKING).build();
+        employeeRepository.save(employee1);
+        Employee employee2 = Employee.builder()
+                .firstName("John")
+                .lastName("Lennon")
+                .phoneNumber("7169999999")
+                .employeeStatus(EmployeeStatus.WORKING).build();
+        employeeRepository.save(employee2);
+
+        Employee employee3 = Employee.builder()
+                .firstName("Ringo")
+                .lastName("Starr")
+                .phoneNumber("7169999999")
+                .employeeStatus(EmployeeStatus.WORKING).build();
+        employeeRepository.save(employee3);
+
+        List<Employee> mockEmployeesList = List.of(employee1,employee2,employee3);
+
+        when(employeeRepository.findAll()).thenReturn(mockEmployeesList);
+
+        List<Employee> employees = employeeService.getAllEmployees();
+
+        assertEquals(3,employees.size(),"Number of employees should match the number of saved employees");
+
+        verify(employeeRepository,times(1)).findAll();
     }
 
     @Test
