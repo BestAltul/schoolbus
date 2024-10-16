@@ -13,8 +13,10 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.wny.schoolbus.services.EmployeeService;
 import com.wny.schoolbus.services.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
 
 @org.springframework.stereotype.Component
 @Route("")
@@ -26,14 +28,19 @@ public class MainView extends AppLayout {
     private RadioServiceImpl radioService;
     private SimCardServiceImpl simCardService;
     private SchoolBusHistoryServiceImpl schoolBusHistoryService;
+    private EmployeeServiceImpl employeeService;
+
+    private RestTemplate restTemplate;
 
     @Autowired
-    public MainView(BusServiceImpl busService,DashCamServiceImpl dashCamService, RadioServiceImpl radioService, SimCardServiceImpl simCardService,SchoolBusHistoryServiceImpl schoolBusHistoryService) {
+    public MainView(BusServiceImpl busService,DashCamServiceImpl dashCamService, RadioServiceImpl radioService, SimCardServiceImpl simCardService,SchoolBusHistoryServiceImpl schoolBusHistoryService, EmployeeServiceImpl employeeService,RestTemplate restTemplate) {
         this.busService = busService;
         this.dashCamService = dashCamService;
         this.simCardService = simCardService;
         this.radioService   = radioService;
         this.schoolBusHistoryService = schoolBusHistoryService;
+        this.employeeService = employeeService;
+        this.restTemplate = restTemplate;
 
         initHeader();
         initDrawer();
@@ -62,8 +69,9 @@ public class MainView extends AppLayout {
         Tab dashCamTab = new Tab("Dash cameras");
         Tab radioTab = new Tab("Radios");
         Tab simCardTab = new Tab("Sim cards");
+        Tab employeeTab = new Tab("Employees");
 
-        Tabs tabs = new Tabs(busesTab, dashCamTab, radioTab,simCardTab);
+        Tabs tabs = new Tabs(busesTab, dashCamTab, radioTab,simCardTab,employeeTab);
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
 
         tabs.addSelectedChangeListener(event -> {
@@ -79,6 +87,8 @@ public class MainView extends AppLayout {
                 replaceContent(new DeviceListView("radio",dashCamService,radioService,simCardService));
             } else if (selectedTab.equals(simCardTab)) {
                 replaceContent(new SimCardListView(simCardService));
+            } else if (selectedTab.equals(employeeTab)) {
+                replaceContent(new EmployeeListView(employeeService,restTemplate));
             }
         });
 

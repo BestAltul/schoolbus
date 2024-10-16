@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,10 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
+
     private ModelMapper modelMapper;
+
+    private RestTemplate restTemplate;
 
     public Employee addEmployee(Employee employee){
         return employeeRepository.save(employee);
@@ -52,6 +56,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    public void save(Employee employee){
+        employeeRepository.save(employee);
     }
 
 
