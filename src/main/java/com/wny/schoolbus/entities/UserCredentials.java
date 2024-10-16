@@ -20,6 +20,7 @@ import java.util.Date;
 @Table(name = "user_credentials")
 public class UserCredentials {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String userId;
 
     @NotBlank(message = "User login cannot be blank")

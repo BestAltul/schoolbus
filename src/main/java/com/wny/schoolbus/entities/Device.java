@@ -11,8 +11,8 @@ import lombok.*;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Device {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @NonNull
     protected String name;

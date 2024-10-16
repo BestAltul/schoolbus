@@ -152,7 +152,7 @@ public class DeviceListView extends VerticalLayout {
     private Button createSimCardHistoryButton(Device device){
 
         Button simCardHistoryButton = new Button("Show sim card history", event -> {
-            Integer simCardId = device.getSimCard().getId();
+            String simCardId = device.getSimCard().getId();
             List<SimCardHistory> history = simCardService.getSimCardHistoryByDashCamId(device.getId());
             openSimCardHistoryModal(history);
         });

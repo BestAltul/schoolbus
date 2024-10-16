@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RadioRepository extends JpaRepository<Radio,Integer> {
+public interface RadioRepository extends JpaRepository<Radio,String> {
     List<Radio> findAll();
 }

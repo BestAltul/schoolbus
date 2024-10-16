@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserCredentialsRepository extends JpaRepository<UserCredentials, UUID> {
+public interface UserCredentialsRepository extends JpaRepository<UserCredentials, String> {
 
     Optional<UserCredentials> findByUserLogin(String login);
 

@@ -9,14 +9,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SimCardHistoryRepository extends JpaRepository<SimCardHistory,Integer> {
+public interface SimCardHistoryRepository extends JpaRepository<SimCardHistory,String> {
     SimCardHistory findByDeviceAndEndDateIsNull(Device device);
 
     SimCardHistory findTopBySimCardOrderByStartDateDesc(SimCard simCard);
 
-    List<SimCardHistory> getSimCardHistoryBySimCardId(Integer simCardId);
+    List<SimCardHistory> getSimCardHistoryBySimCardId(String simCardId);
 
-    List<SimCardHistory> getSimCardHistoryByDeviceId(Integer simCardId);
+    List<SimCardHistory> getSimCardHistoryByDeviceId(String simCardId);
 
 
 }

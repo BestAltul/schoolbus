@@ -17,7 +17,7 @@ public class SimCardController {
 
     private final SimCardServiceImpl simCardService;
 
-    public List<SimCardHistory> getSimCardHistory(@PathVariable Integer simCardId){
+    public List<SimCardHistory> getSimCardHistory(@PathVariable String simCardId){
 
         return simCardService.getSimCardHistoryBySimCardId(simCardId);
 
