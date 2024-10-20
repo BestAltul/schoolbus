@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SimCardRepository extends JpaRepository<SimCard, Integer> {
-    List<SimCard> findAll();
+public interface SimCardRepository extends JpaRepository<SimCard, String> {
+
 }

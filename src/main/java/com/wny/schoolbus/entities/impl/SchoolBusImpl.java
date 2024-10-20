@@ -21,8 +21,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 public class SchoolBusImpl implements Vehicle {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @NonNull
     @DisplayName("Name")

@@ -22,7 +22,7 @@ public class SchoolBusHistoryServiceImpl implements SchoolBusHistoryService {
     private EntityManager entityManager;
 
     @Transactional(readOnly=true)
-    public List<Number> getRevisionsForEntity(Integer entityId){
+    public List<Number> getRevisionsForEntity(String entityId){
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         return auditReader.getRevisions(SchoolBusImpl.class,entityId);
     }
@@ -45,7 +45,7 @@ public class SchoolBusHistoryServiceImpl implements SchoolBusHistoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<SchoolBusRevision> getEntitiesAtRevisionsWithDate(Integer entityId, List<Number> revisions) {
+    public List<SchoolBusRevision> getEntitiesAtRevisionsWithDate(String entityId, List<Number> revisions) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         List<SchoolBusRevision> revisionEntities = new ArrayList<>();
 

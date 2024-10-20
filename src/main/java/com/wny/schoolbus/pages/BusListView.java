@@ -135,7 +135,7 @@ public class BusListView extends VerticalLayout {
         return schoolBusHistoryButton;
     }
 
-    private void openSchoolBusHistoryModal(Integer busId, List<Number> revisions) {
+    private void openSchoolBusHistoryModal(String busId, List<Number> revisions) {
 
         com.vaadin.flow.component.dialog.Dialog dialog = new Dialog();
         dialog.setHeaderTitle("School bus history");

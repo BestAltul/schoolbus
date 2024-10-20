@@ -44,14 +44,14 @@ public class SimCardServiceImpl implements SimCardService {
         return simCardHistoryRepository.findTopBySimCardOrderByStartDateDesc(simCard);
     }
 
-    public List<SimCardHistory> getSimCardHistoryBySimCardId(Integer simCardId){
+    public List<SimCardHistory> getSimCardHistoryBySimCardId(String simCardId){
         return simCardHistoryRepository.getSimCardHistoryBySimCardId(simCardId);
     }
 //    public List<SimCardHistoryImpl> getSimCardHistoryByDashCamId(Integer dashCamId){
 //        return simCardHistoryRepository.getSimCardHistoryByDashCamId(dashCamId);
 //    }
 
-    public List<SimCardHistory> getSimCardHistoryByDashCamId(Integer deviceId){
+    public List<SimCardHistory> getSimCardHistoryByDashCamId(String deviceId){
         return simCardHistoryRepository.getSimCardHistoryByDeviceId(deviceId);
     }
 

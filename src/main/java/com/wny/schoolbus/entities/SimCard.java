@@ -19,8 +19,8 @@ import java.util.Objects;
 public class SimCard {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @NonNull
     @Enumerated(EnumType.STRING)

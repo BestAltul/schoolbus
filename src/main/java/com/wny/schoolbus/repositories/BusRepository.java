@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BusRepository  extends JpaRepository<SchoolBusImpl, Integer> {
-    List<SchoolBusImpl> findAll();
+public interface BusRepository  extends JpaRepository<SchoolBusImpl, String> {
+
 }

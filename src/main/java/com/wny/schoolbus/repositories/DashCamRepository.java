@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DashCamRepository extends JpaRepository<DashCam,Integer> {
-    List<DashCam> findAll();
+public interface DashCamRepository extends JpaRepository<DashCam,String> {
+
 }

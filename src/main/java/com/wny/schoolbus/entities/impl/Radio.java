@@ -36,11 +36,11 @@ public class Radio extends Device {
 
     @Override
     public String toString(){
-        return this.name+" "+this.getDescription();
+        return getName()+" "+this.getDescription();
     }
 
     public String getDescription(){
-        return this.name+" "+this.IMEI;
+        return getName()+" "+this.IMEI;
     }
 
 }
