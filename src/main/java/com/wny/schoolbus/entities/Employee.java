@@ -4,13 +4,15 @@ import com.wny.schoolbus.enums.EmployeeStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name="employee")
+@Table(name = "employee")
 public class Employee {
 
     @Id
@@ -21,7 +23,12 @@ public class Employee {
     private String lastName;
     private String phoneNumber;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
+    @ManyToMany(mappedBy = "drivers", fetch = FetchType.LAZY)
+    private List<Route> routesAsDriverList;
+
+    @ManyToMany(mappedBy = "monitors", fetch = FetchType.LAZY)
+    private List<Route> routesAsMonitorLists;
 }
