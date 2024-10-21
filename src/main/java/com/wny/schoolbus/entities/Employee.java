@@ -21,7 +21,7 @@ public class Employee {
     private String lastName;
     private String phoneNumber;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
 }

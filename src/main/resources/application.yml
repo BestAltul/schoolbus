@@ -1,3 +1,45 @@
+server:
+  port: 8080
+  url-1: localhost:8080
+
 spring:
-  profiles:
-    active: local
+  security:
+    enabled: false
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/schoolbus
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 30
+  flyway:
+    enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      format_sql: true
+    show-sql: true
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        envers:
+          store_data_at_delete: true
+          global_with_modified_flag: true;
+
+  sql:
+    init:
+      platform: postgres
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+      hibernate: DEBUG
+
+jwt:
+  jwt-secret: MyTopSecretWord
+  subject: User details
+  issuer: schoolbus
+  userlogin_claim: login
