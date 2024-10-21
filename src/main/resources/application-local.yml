@@ -7,9 +7,9 @@ spring:
     enabled: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/bus_app_db
+    url: jdbc:postgresql://localhost:5432/schoolbus
     username: postgres
-    password: b017
+    password: postgres
     hikari:
       maximum-pool-size: 30
   flyway:
@@ -17,7 +17,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
       format_sql: true
     show-sql: true
     properties:
@@ -35,8 +35,8 @@ logging:
   level:
     org:
       springframework:
-        security: INFO
-      hibernate: INFO
+        security: DEBUG
+      hibernate: DEBUG
 
 jwt:
   jwt-secret: MyTopSecretWord
