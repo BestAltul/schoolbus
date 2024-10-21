@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface BusRepository  extends JpaRepository<SchoolBusImpl, String> {
-    List<SchoolBusImpl> findAll();
+
 }

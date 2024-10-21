@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface DashCamRepository extends JpaRepository<DashCam,String> {
-    List<DashCam> findAll();
+
 }

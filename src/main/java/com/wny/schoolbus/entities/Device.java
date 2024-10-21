@@ -15,7 +15,7 @@ public abstract class Device {
     private String id;
 
     @NonNull
-    protected String name;
+    private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sim_card_id")
@@ -24,6 +24,7 @@ public abstract class Device {
     public abstract SchoolBusImpl getSchoolBus();
 
     public Device(@NonNull String name) {
+
         this.name = name;
     }
 

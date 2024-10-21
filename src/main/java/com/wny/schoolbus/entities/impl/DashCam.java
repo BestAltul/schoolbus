@@ -39,11 +39,11 @@ public class DashCam extends Device{
 
     @Override
     public String toString(){
-        return this.name+" "+this.DRID;
+        return getName()+" "+this.DRID;
     }
 
     public String getDescription(){
-        return this.name+" "+DRID;
+        return getName()+" "+DRID;
     }
 
 }

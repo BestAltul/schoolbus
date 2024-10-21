@@ -19,7 +19,7 @@ import com.wny.schoolbus.entities.impl.DashCam;
 import com.wny.schoolbus.entities.impl.Radio;
 import com.wny.schoolbus.entities.SimCardHistory;
 import com.wny.schoolbus.entities.SimCard;
-import com.wny.schoolbus.factory.impl.DashCamFactoryImpl;
+//import com.wny.schoolbus.factory.impl.DashCamFactoryImpl;
 import com.wny.schoolbus.factory.impl.RadioFactoryImpl;
 import com.wny.schoolbus.services.impl.DashCamServiceImpl;
 import com.wny.schoolbus.services.impl.RadioServiceImpl;
@@ -298,13 +298,15 @@ public class DeviceListView extends VerticalLayout {
 
             if (!name.isEmpty() && !drid.isEmpty()) {
                 if(deviceType.equals("dashcam")){
-                    DashCamFactoryImpl dashCamFactory = new DashCamFactoryImpl();
-                    DashCam newDashCam = dashCamFactory.createDevice(name,drid,imei,simCard);
+                    //DashCamFactoryImpl dashCamFactory = new DashCamFactoryImpl();
+                    //DashCam newDashCam = dashCamFactory.createDevice(name,drid,imei,simCard);
+                    DashCam newDashCam = new DashCam(name,drid,imei,simCard);
                     dashCamService.save(newDashCam);
                     dataProvider.getItems().add(newDashCam);
                 }else if(deviceType.equals("radio")){
-                    RadioFactoryImpl radioFactory = new RadioFactoryImpl();
-                    Radio newRadio = radioFactory.createDevice(name,drid,imei,simCard);
+                    //RadioFactoryImpl radioFactory = new RadioFactoryImpl();
+                    //Radio newRadio = radioFactory.createDevice(name,drid,imei,simCard);
+                    Radio newRadio = new Radio(name,imei,simCard);
                     radioService.save(newRadio);
                     dataProvider.getItems().add(newRadio);
                 }

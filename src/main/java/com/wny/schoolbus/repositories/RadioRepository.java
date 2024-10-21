@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface RadioRepository extends JpaRepository<Radio,String> {
-    List<Radio> findAll();
+
 }
