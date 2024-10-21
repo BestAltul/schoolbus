@@ -56,12 +56,12 @@ public class SchoolBusImpl implements Vehicle {
     @ManyToMany(mappedBy = "buses", fetch = FetchType.LAZY)
     private List<Route> routes;
 
-//    public SchoolBusImpl(String name, BusType type, Terminal terminal, DashCam dashCam, Radio radio){
-//        this.name = name;
-//        this.busType = type;
-//        this.dashCam = dashCam;
-//        this.radio = radio;
-//    }
+    public SchoolBusImpl(String name, BusType type, Terminal terminal, DashCam dashCam, Radio radio){
+        this.name = name;
+        this.busType = type;
+        this.dashCam = dashCam;
+        this.radio = radio;
+    }
 }
 
 
