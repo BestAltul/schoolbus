@@ -11,8 +11,10 @@ import com.wny.schoolbus.repositories.EmployeeRepository;
 import com.wny.schoolbus.repositories.RouteRepository;
 import com.wny.schoolbus.services.RouteService;
 import com.wny.schoolbus.utils.route.ObjectPersistenceChecker;
+import com.wny.schoolbus.utils.route.EntityListConverter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public class RouteServiceImpl implements RouteService {
     private final RouteRepository routeRepository;
     private final EmployeeRepository employeeRepository;
     private final BusRepository busRepository;
-    private final ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Override
     public RouteResponse addRoute(RouteRequest request) {
@@ -114,7 +116,16 @@ public class RouteServiceImpl implements RouteService {
         Route route = routeRepository.findById(id).orElseThrow(() ->
                 new ObjectNotFoundException(String.format("Route with id %s not found", id)));
 
+        modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
+        TypeMap<RouteRequest, Route> typeMap = modelMapper.createTypeMap(RouteRequest.class, Route.class);
+        typeMap.addMappings(mapper -> mapper.using(new EntityListConverter(busRepository))
+                .map(RouteRequest::getBusIds, Route::setBuses));
+        typeMap.addMappings(mapper -> mapper.using(new EntityListConverter(employeeRepository))
+                .map(RouteRequest::getDriverIds, Route::setDrivers));
+        typeMap.addMappings(mapper -> mapper.using(new EntityListConverter(employeeRepository))
+                .map(RouteRequest::getMonitorIds, Route::setMonitors));
+
         modelMapper.map(request, route);
         routeRepository.save(route);
 
